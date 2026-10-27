@@ -3,3 +3,4 @@ node_modules/
 .setup-confirmed
 .DS_Store
 .vscode/
+CLAUDE.local.md
