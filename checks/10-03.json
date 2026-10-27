@@ -1,0 +1,1 @@
+{"kind":"script","verify":[{"kind":"result","label":"indexes led by customer_id","sql":"SELECT count(*) AS n FROM pg_index i JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = i.indkey[0] WHERE i.indrelid = 'public.page_views'::regclass AND a.attname = 'customer_id'","expected":{"columns":["n"],"rowCount":1,"hash":"31ff964c9bd73b76","rowHashes":["080a9ed428559ef6"]}}]}

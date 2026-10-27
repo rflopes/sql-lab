@@ -1,0 +1,8 @@
+-- Used only by "pnpm sql". Your own ~/.psqlrc is not touched.
+\set QUIET 1
+\timing on
+\pset null '(null)'
+\pset border 2
+\x auto
+SET TimeZone = 'UTC';
+\set QUIET 0

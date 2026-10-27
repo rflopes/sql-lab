@@ -1,0 +1,1 @@
+{"kind":"result","orderMatters":true,"expected":{"columns":["customer_id","spend_cents"],"rowCount":5,"hash":"e23e950fffafcbea","rowHashes":["9bd02b5c0a0e31ad","32f01f084981130c","64af7fb9e4250910","08265db73bb26d87","aeeec2a993196e2d"]}}

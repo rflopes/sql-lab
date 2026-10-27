@@ -1,0 +1,1 @@
+{"kind":"result","orderMatters":true,"expected":{"columns":["product_id","name","unit_price_cents"],"rowCount":3,"hash":"b17ce237ff83976f","rowHashes":["960ae18b94947097","a05b3e88f810003c","3f9e1b5280559b1f"]}}

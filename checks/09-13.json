@@ -1,0 +1,1 @@
+{"kind":"result","orderMatters":true,"expected":{"columns":["customer_id","max_gap_days"],"rowCount":10,"hash":"ca7459f1e8ec70dc","rowHashes":["7171ef4bf0a52181","ce993119944064bc","1cd0825d64c56385","c64217a8ff1ace0e","0aa5f567ac23fe3f","de15f7e4e63bcd48","7c0ea759b4ccffa2","e119da29708aaaae","d7faf4715f6fd8fe","94333daa935ed246"]}}

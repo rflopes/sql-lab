@@ -1,0 +1,24 @@
+{
+  "name": "sql-lab",
+  "private": true,
+  "type": "module",
+  "description": "Practice project: learn SQL on PostgreSQL by making the checker go green.",
+  "scripts": {
+    "setup": "tsx tools/setup.ts",
+    "check": "tsx tools/check.ts",
+    "status": "tsx tools/status.ts",
+    "sql": "tsx tools/sql.ts",
+    "db:reset": "tsx tools/db-reset.ts",
+    "setup:bridge": "tsx tools/setup-bridge.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/pg": "^8.23.1",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

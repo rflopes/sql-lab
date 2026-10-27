@@ -1,0 +1,1 @@
+{"kind":"result","orderMatters":false,"expected":{"columns":["order_id","product_name","quantity"],"rowCount":2,"hash":"8017f9e8e3c52321","rowHashes":["30a3d122d07c7619","968e821b426a266e"]}}
