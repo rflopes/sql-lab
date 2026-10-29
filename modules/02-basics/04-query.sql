@@ -5,5 +5,7 @@
 -- Run: pnpm check 02-04
 
 -- Write your query below
-
-
+SELECT DISTINCT city
+FROM customers
+WHERE city IS NOT NULL
+ORDER BY city ASC

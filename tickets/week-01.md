@@ -99,7 +99,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: sku, name, price_eur.
   - `pnpm check 02-03` is green.
 
-## 02-04: Cities of our customers
+## 02-04: Cities of our customers ✅
 
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
