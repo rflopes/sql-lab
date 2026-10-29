@@ -5,5 +5,5 @@
 -- Run: pnpm check 01-02
 
 -- Write your query below
-
-
+SELECT name, country
+FROM suppliers

@@ -33,7 +33,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: category_id, name, parent_id.
   - `pnpm check 01-01` is green.
 
-## 01-02: Supplier names and countries
+## 01-02: Supplier names and countries ✅
 
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
