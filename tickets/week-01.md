@@ -44,7 +44,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: name, country.
   - `pnpm check 01-02` is green.
 
-## 01-03: How many pricey products?
+## 01-03: How many pricey products? ✅
 
 - Type: PREDICT
 - Effort: 1 exercise (5 to 12 min)
