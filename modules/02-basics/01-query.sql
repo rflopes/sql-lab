@@ -5,5 +5,5 @@
 -- Run: pnpm check 02-01
 
 -- Write your query below
-
-
+SELECT name, unit_price_cents
+FROM products

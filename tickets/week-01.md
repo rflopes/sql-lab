@@ -66,7 +66,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - You wrote your prediction on the `-- GUESS:` line before running anything.
   - `pnpm check 01-04` ran and you know why you were right or wrong. Not graded.
 
-## 02-01: Product names and prices
+## 02-01: Product names and prices ✅
 
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
