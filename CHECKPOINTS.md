@@ -18,24 +18,9 @@ Prediction + result:
 Still foggy / to revisit:
 ```
 
-## Weekly checkpoint (Friday)
+## Weekly checkpoint
 
-- Sessions done vs planned (no judgment).
-- Enjoyment, 1 to 5.
-- Best moment of the week, however small.
-- What got in the way.
-- One adjustment for next week.
-
-### Template
-
-```
-## Week N  (date)
-Sessions: done / planned
-Enjoyment (1-5):
-Best moment:
-What got in the way:
-Adjustment for next week:
-```
+Weekly checkpoints live in `../CHECKPOINTS.md` (shared across projects).
 
 ---
 
