@@ -5,3 +5,5 @@
 -- Run: pnpm check 01-01
 
 -- Write your query below
+SELECT *
+FROM categories

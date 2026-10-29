@@ -22,7 +22,8 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
 
 ---
 
-## 01-01: List all categories
+## 01-01: List all categories ✅
+
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Reading a whole table
@@ -33,6 +34,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - `pnpm check 01-01` is green.
 
 ## 01-02: Supplier names and countries
+
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Choosing columns
@@ -43,6 +45,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - `pnpm check 01-02` is green.
 
 ## 01-03: How many pricey products?
+
 - Type: PREDICT
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Filtering rows
@@ -53,6 +56,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - `pnpm check 01-03` ran and you know why you were right or wrong. Not graded.
 
 ## 01-04: How many sales employees?
+
 - Type: PREDICT
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Filtering rows on text
@@ -63,6 +67,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - `pnpm check 01-04` ran and you know why you were right or wrong. Not graded.
 
 ## 02-01: Product names and prices
+
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: SELECT, choosing columns
@@ -73,6 +78,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - `pnpm check 02-01` is green.
 
 ## 02-02: Look up one employee
+
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: WHERE with a single value
@@ -83,6 +89,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - `pnpm check 02-02` is green.
 
 ## 02-03: Prices in euros
+
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Aliases and expressions
@@ -93,6 +100,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - `pnpm check 02-03` is green.
 
 ## 02-04: Cities of our customers
+
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: DISTINCT, NULL, ORDER BY
@@ -104,6 +112,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - `pnpm check 02-04` is green.
 
 ## 02-05: Mid-priced active products
+
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Combining conditions
@@ -115,6 +124,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - `pnpm check 02-05` is green.
 
 ## 02-06: Customers in three cities
+
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Matching a list of values
@@ -126,6 +136,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - `pnpm check 02-06` is green.
 
 ## 02-07: Find the jackets
+
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Pattern matching and case
@@ -137,6 +148,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - `pnpm check 02-07` is green.
 
 ## 02-08: Customers without a phone
+
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Testing for NULL
