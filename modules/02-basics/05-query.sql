@@ -5,5 +5,7 @@
 -- Run: pnpm check 02-05
 
 -- Write your query below
-
-
+SELECT product_id, name, unit_price_cents
+FROM products
+WHERE unit_price_cents BETWEEN 5000 AND 15000 AND is_active
+ORDER BY product_id
