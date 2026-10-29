@@ -6,4 +6,7 @@
 
 -- Write your query below
 
-
+SELECT customer_id, first_name, last_name
+FROM customers
+WHERE phone IS NULL OR TRIM(phone) = ''
+ORDER BY customer_id

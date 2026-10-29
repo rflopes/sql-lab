@@ -147,7 +147,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Row order matters.
   - `pnpm check 02-07` is green.
 
-## 02-08: Customers without a phone
+## 02-08: Customers without a phone ✅
 
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
