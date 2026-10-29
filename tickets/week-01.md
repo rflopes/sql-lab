@@ -77,7 +77,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: name, unit_price_cents.
   - `pnpm check 02-01` is green.
 
-## 02-02: Look up one employee
+## 02-02: Look up one employee ✅
 
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)

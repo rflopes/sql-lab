@@ -5,5 +5,6 @@
 -- Run: pnpm check 02-02
 
 -- Write your query below
-
-
+SELECT first_name, last_name, title
+FROM employees
+WHERE employee_id = 7
