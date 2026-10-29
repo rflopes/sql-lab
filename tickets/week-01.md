@@ -55,7 +55,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - You wrote your prediction on the `-- GUESS:` line before running anything.
   - `pnpm check 01-03` ran and you know why you were right or wrong. Not graded.
 
-## 01-04: How many sales employees?
+## 01-04: How many sales employees? ✅
 
 - Type: PREDICT
 - Effort: 1 exercise (5 to 12 min)
