@@ -5,5 +5,7 @@
 -- Run: pnpm check 02-06
 
 -- Write your query below
-
-
+SELECT customer_id, city
+FROM customers
+WHERE LOWER(TRIM(city)) IN ('porto', 'lisbon', 'braga')
+ORDER BY customer_id

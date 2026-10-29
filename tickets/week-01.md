@@ -123,7 +123,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Row order matters.
   - `pnpm check 02-05` is green.
 
-## 02-06: Customers in three cities
+## 02-06: Customers in three cities ✅
 
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
