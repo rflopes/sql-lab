@@ -88,7 +88,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: first_name, last_name, title.
   - `pnpm check 02-02` is green.
 
-## 02-03: Prices in euros
+## 02-03: Prices in euros ✅
 
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)

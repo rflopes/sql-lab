@@ -6,4 +6,5 @@
 
 -- Write your query below
 
-
+SELECT sku, name, (unit_price_cents / 100) AS price_eur
+FROM products
