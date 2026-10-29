@@ -135,7 +135,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Row order matters.
   - `pnpm check 02-06` is green.
 
-## 02-07: Find the jackets
+## 02-07: Find the jackets ✅
 
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
