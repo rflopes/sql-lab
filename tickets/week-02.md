@@ -5,15 +5,15 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 
 | Ticket | Title | Type | Status |
 | --- | --- | --- | --- |
-| 02-09 | Five most expensive products | QUERY | todo |
-| 02-10 | Page 3 of the customer list | QUERY | todo |
-| 02-11 | Last names, as stored | QUERY | todo |
-| 02-12 | Everything except one supplier | QUERY | todo |
-| 02-13 | Orders of March 2025 | QUERY | todo |
-| 02-14 | Customers without a city: empty result | DEBUG | todo |
-| 02-15 | The "cheapest" products look random | DEBUG | todo |
-| 02-16 | Error on the price filter | DEBUG | todo |
-| 02-17 | Predict: cities and opt-ins | PREDICT | todo |
+| 02-09 | Five most expensive products | QUERY | done |
+| 02-10 | Page 3 of the customer list | QUERY | done |
+| 02-11 | Last names, as stored | QUERY | done |
+| 02-12 | Everything except one supplier | QUERY | done |
+| 02-13 | Orders of March 2025 | QUERY | done |
+| 02-14 | Customers without a city: empty result | DEBUG | done |
+| 02-15 | The "cheapest" products look random | DEBUG | done |
+| 02-16 | Error on the price filter | DEBUG | done |
+| 02-17 | Predict: cities and opt-ins | PREDICT | done |
 | 03-01 | Add a supplier | DML | todo |
 | 03-02 | Deactivate one product | DML | todo |
 | 03-03 | New categories, get the ids back | DML | todo |

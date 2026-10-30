@@ -5,18 +5,18 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 
 | Ticket | Title | Type | Status |
 | --- | --- | --- | --- |
-| 01-01 | List all categories | QUERY | todo |
-| 01-02 | Supplier names and countries | QUERY | todo |
-| 01-03 | How many pricey products? | PREDICT | todo |
-| 01-04 | How many sales employees? | PREDICT | todo |
-| 02-01 | Product names and prices | QUERY | todo |
-| 02-02 | Look up one employee | QUERY | todo |
-| 02-03 | Prices in euros | QUERY | todo |
-| 02-04 | Cities of our customers | QUERY | todo |
-| 02-05 | Mid-priced active products | QUERY | todo |
-| 02-06 | Customers in three cities | QUERY | todo |
-| 02-07 | Find the jackets | QUERY | todo |
-| 02-08 | Customers without a phone | QUERY | todo |
+| 01-01 | List all categories | QUERY | done |
+| 01-02 | Supplier names and countries | QUERY | done |
+| 01-03 | How many pricey products? | PREDICT | done |
+| 01-04 | How many sales employees? | PREDICT | done |
+| 02-01 | Product names and prices | QUERY | done |
+| 02-02 | Look up one employee | QUERY | done |
+| 02-03 | Prices in euros | QUERY | done |
+| 02-04 | Cities of our customers | QUERY | done |
+| 02-05 | Mid-priced active products | QUERY | done |
+| 02-06 | Customers in three cities | QUERY | done |
+| 02-07 | Find the jackets | QUERY | done |
+| 02-08 | Customers without a phone | QUERY | done |
 
 Tables: categories, suppliers, products, customers, employees, orders, order_items, payments, reviews. Explore with `pnpm sql` (`\dt`, `\d table`). Money is in integer cents. "Today" is never `now()`: statements fix their own dates.
 
