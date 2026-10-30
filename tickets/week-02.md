@@ -102,7 +102,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Row order matters.
   - `pnpm check 02-15` is green.
 
-## 02-16: Error on the price filter
+## 02-16: Error on the price filter ✅
 - Type: DEBUG
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Reading an error message

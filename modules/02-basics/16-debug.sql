@@ -8,4 +8,4 @@
 -- The query below is broken. Fix it.
 SELECT name, unit_price_cents / 100.0 AS price_eur
 FROM products
-WHERE price_eur > 100;
+WHERE unit_price_cents > 10000
