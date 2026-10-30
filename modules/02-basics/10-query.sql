@@ -6,4 +6,8 @@
 
 -- Write your query below
 
-
+SELECT customer_id, email
+FROM customers
+ORDER BY customer_id
+LIMIT 20
+OFFSET (3-1)*20

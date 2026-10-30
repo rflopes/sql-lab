@@ -36,7 +36,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Row order matters.
   - `pnpm check 02-09` is green.
 
-## 02-10: Page 3 of the customer list
+## 02-10: Page 3 of the customer list ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Pagination
