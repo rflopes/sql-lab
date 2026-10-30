@@ -113,7 +113,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: name, price_eur.
   - `pnpm check 02-16` is green.
 
-## 02-17: Predict: cities and opt-ins
+## 02-17: Predict: cities and opt-ins ✅
 - Type: PREDICT
 - Effort: 1 exercise (5 to 12 min)
 - Concept: What is one row of the result?
