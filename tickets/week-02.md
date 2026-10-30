@@ -25,7 +25,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
 
 ---
 
-## 02-09: Five most expensive products
+## 02-09: Five most expensive products ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: ORDER BY with several keys, LIMIT

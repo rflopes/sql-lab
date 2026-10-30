@@ -6,4 +6,7 @@
 
 -- Write your query below
 
-
+SELECT product_id, name, unit_price_cents
+FROM products
+ORDER BY unit_price_cents DESC, product_id ASC
+LIMIT 5
