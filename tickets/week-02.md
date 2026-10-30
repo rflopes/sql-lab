@@ -47,7 +47,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Row order matters.
   - `pnpm check 02-10` is green.
 
-## 02-11: Last names, as stored
+## 02-11: Last names, as stored ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Sorting text and collation

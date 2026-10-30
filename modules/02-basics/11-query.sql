@@ -5,5 +5,6 @@
 -- Run: pnpm check 02-11
 
 -- Write your query below
-
-
+SELECT DISTINCT last_name
+FROM customers
+ORDER BY last_name ASC 
