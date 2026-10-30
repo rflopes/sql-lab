@@ -6,4 +6,7 @@
 -- Run: pnpm check 02-15
 
 -- The query below is broken. Fix it.
-SELECT product_id, name, unit_price_cents FROM products LIMIT 3;
+SELECT product_id, name, unit_price_cents
+FROM products
+ORDER BY unit_price_cents ASC, product_id ASC
+LIMIT 3

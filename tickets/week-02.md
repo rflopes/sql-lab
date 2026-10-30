@@ -90,7 +90,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: customer_id, email.
   - `pnpm check 02-14` is green.
 
-## 02-15: The "cheapest" products look random
+## 02-15: The "cheapest" products look random ✅
 - Type: DEBUG
 - Effort: 1 exercise (5 to 12 min)
 - Concept: LIMIT needs an order
