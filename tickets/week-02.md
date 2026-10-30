@@ -58,7 +58,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Row order matters.
   - `pnpm check 02-11` is green.
 
-## 02-12: Everything except one supplier
+## 02-12: Everything except one supplier ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: NULL-safe comparison

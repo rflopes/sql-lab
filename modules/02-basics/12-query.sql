@@ -5,5 +5,6 @@
 -- Run: pnpm check 02-12
 
 -- Write your query below
-
-
+SELECT product_id, name
+FROM products
+WHERE supplier_id IS DISTINCT FROM 3
