@@ -79,7 +79,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Row order matters.
   - `pnpm check 02-13` is green.
 
-## 02-14: Customers without a city: empty result
+## 02-14: Customers without a city: empty result ✅
 - Type: DEBUG
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Comparing with NULL

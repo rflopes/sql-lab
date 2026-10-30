@@ -6,4 +6,6 @@
 -- Run: pnpm check 02-14
 
 -- The query below is broken. Fix it.
-SELECT customer_id, email FROM customers WHERE city = NULL;
+SELECT customer_id, email
+FROM customers
+WHERE city IS NULL
