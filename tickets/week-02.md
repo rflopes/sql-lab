@@ -68,7 +68,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: product_id, name.
   - `pnpm check 02-12` is green.
 
-## 02-13: Orders of March 2025
+## 02-13: Orders of March 2025 ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Timestamps and half-open ranges
