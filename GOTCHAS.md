@@ -17,6 +17,8 @@
 - [`INSERT ... SELECT` from a `VALUES` list](#insert--select-from-a-values-list)
 - [Always list the columns in `INSERT`](#always-list-the-columns-in-insert)
 - [Don't use keywords as aliases](#dont-use-keywords-as-aliases)
+- [`ROUND` vs `CEIL`](#round-vs-ceil)
+- [`ON CONFLICT` (upsert)](#on-conflict-upsert)
 
 ---
 
@@ -148,3 +150,41 @@ Write `INSERT INTO t (a, b) VALUES ...`, not `INSERT INTO t VALUES ...`.
 ## Don't use keywords as aliases
 
 An alias like `values`, `order` or `user` may work, but it is **confusing to read** and may fail in other contexts or databases. Prefer short neutral names like `v` or `new_rows`.
+
+---
+
+## `ROUND` vs `CEIL`
+
+- `CEIL` **always rounds up**.
+- `ROUND` goes to the **nearest** value; halves round away from zero (up, for positive numbers).
+
+```sql
+SELECT ceil(879.375), round(879.375);   -- 880 vs 879
+SELECT ceil(879.5),   round(879.5);     -- 880 vs 880
+```
+
+> ⚠️ **Warning:** A passing check doesn't prove the rounding is right: with "friendly" data, `CEIL` and `ROUND` can give the same results. Test with values like `.375`.
+
+> 📝 **Note:** This is for `numeric`. With `double precision` (`float`), Postgres `ROUND` may round halves to the **even** number: `round(2.5::float)` gives `2`.
+
+---
+
+## `ON CONFLICT` (upsert)
+
+`INSERT ... ON CONFLICT` inserts new rows and, when a row would duplicate a unique value, **updates it instead** (or ignores it).
+
+```sql
+INSERT INTO players (email, name, score)
+VALUES ('ana@x.pt', 'Ana', 10)
+ON CONFLICT (email)
+DO UPDATE SET name  = EXCLUDED.name,
+              score = EXCLUDED.score;
+```
+
+- `ON CONFLICT (col)`: the conflict target goes **in parentheses** and must have a `UNIQUE` index or primary key.
+- `DO UPDATE SET`: list **column by column** what changes. Columns not listed keep their values.
+- `EXCLUDED`: the row we **tried** to insert. `EXCLUDED.name` is the new value; `name` alone is the current one.
+
+> 💡 **Tip:** `ON CONFLICT (col) DO NOTHING` skips duplicates instead of updating them.
+
+> 📝 **Note:** `ON CONFLICT` is not standard SQL (Postgres and SQLite have it); the standard uses `MERGE`, which Postgres also supports since version 15.
