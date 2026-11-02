@@ -4,5 +4,5 @@
 -- Run: pnpm check 03-02
 
 -- Write your statements below
-
-
+UPDATE products SET is_active = false
+WHERE sku = 'TNT-0001'

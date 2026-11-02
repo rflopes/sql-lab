@@ -15,7 +15,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 02-16 | Error on the price filter | DEBUG | done |
 | 02-17 | Predict: cities and opt-ins | PREDICT | done |
 | 03-01 | Add a supplier | DML | done |
-| 03-02 | Deactivate one product | DML | todo |
+| 03-02 | Deactivate one product | DML | done |
 | 03-03 | New categories, get the ids back | DML | todo |
 | 03-04 | Rain jacket sale | DML | todo |
 | 03-05 | Clean up empty 1-star reviews | DML | todo |
@@ -133,7 +133,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Insert one new supplier: name "Fjord Outfitters", country "Norway", contact_email "hello@fjord.example".
   - `pnpm check 03-01` is green.
 
-## 03-02: Deactivate one product
+## 03-02: Deactivate one product ✅
 - Type: DML
 - Effort: 1 exercise (5 to 12 min)
 - Concept: UPDATE with WHERE
