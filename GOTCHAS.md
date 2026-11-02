@@ -12,6 +12,11 @@
 - [Double vs single quotes](#double-vs-single-quotes)
 - [`RETURNING`](#returning)
 - [Subqueries need parentheses](#subqueries-need-parentheses)
+- [`UPDATE` without `WHERE`](#update-without-where)
+- [Inserting several rows](#inserting-several-rows)
+- [`INSERT ... SELECT` from a `VALUES` list](#insert--select-from-a-values-list)
+- [Always list the columns in `INSERT`](#always-list-the-columns-in-insert)
+- [Don't use keywords as aliases](#dont-use-keywords-as-aliases)
 
 ---
 
@@ -90,3 +95,56 @@ When we want to use a subquery, we should **wrap it in parentheses**.
 INSERT INTO categories (name, parent_id) VALUES
 ('Compasses', (SELECT category_id FROM categories WHERE name = 'Navigation'));
 ```
+
+---
+
+## `UPDATE` without `WHERE`
+
+An `UPDATE` (or `DELETE`) without `WHERE` changes **every row** in the table.
+
+```sql
+UPDATE players SET active = false;                  -- every player!
+UPDATE players SET active = false WHERE id = 42;    -- only one
+```
+
+> ⚠️ **Warning:** Always write the `WHERE` first. Run it as a `SELECT` with the same `WHERE` to check which rows will change.
+
+---
+
+## Inserting several rows
+
+One `INSERT` can add several rows: each row goes **inside parentheses**, and rows are **separated by commas**.
+
+```sql
+INSERT INTO players (name, team_id) VALUES
+('Ana', 1),
+('Rui', 1);
+```
+
+---
+
+## `INSERT ... SELECT` from a `VALUES` list
+
+An `INSERT` doesn't need `VALUES`: it can take its rows from a **`SELECT`**. A `VALUES` list can act as a temporary table, so a repeated subquery is written **only once**.
+
+```sql
+INSERT INTO players (name, team_id)
+SELECT v.name, (SELECT team_id FROM teams WHERE name = 'Lions')
+FROM (VALUES ('Ana'), ('Rui')) AS v(name);
+```
+
+> 💡 **Tip:** `AS v(name)` names the temporary table (`v`) and its column (`name`).
+
+---
+
+## Always list the columns in `INSERT`
+
+Write `INSERT INTO t (a, b) VALUES ...`, not `INSERT INTO t VALUES ...`.
+
+> ⚠️ **Warning:** Without the column list, values are matched by the **column order** of the table, and the insert breaks (or silently fills the wrong columns) if the table changes.
+
+---
+
+## Don't use keywords as aliases
+
+An alias like `values`, `order` or `user` may work, but it is **confusing to read** and may fail in other contexts or databases. Prefer short neutral names like `v` or `new_rows`.
