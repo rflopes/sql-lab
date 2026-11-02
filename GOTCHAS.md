@@ -10,6 +10,8 @@
 - [`NULL`](#null)
 - [`IS DISTINCT FROM`](#is-distinct-from)
 - [Double vs single quotes](#double-vs-single-quotes)
+- [`RETURNING`](#returning)
+- [Subqueries need parentheses](#subqueries-need-parentheses)
 
 ---
 
@@ -63,3 +65,28 @@ SQL treats quotes differently:
 |---|---|---|
 | `"double"` | **identifiers** | `"order"` |
 | `'single'` | **values** | `'Coimbra'` |
+
+---
+
+## `RETURNING`
+
+When we want the insert to return data from the newly inserted rows, we can use `RETURNING` with the **column names**.
+
+```sql
+RETURNING id, city
+```
+
+> 💡 **Tip:** `RETURNING` also works with `UPDATE` and `DELETE`, returning the changed or deleted rows.
+
+> 📝 **Note:** `RETURNING` is not standard SQL; it exists in **Postgres** (and a few others), but not everywhere.
+
+---
+
+## Subqueries need parentheses
+
+When we want to use a subquery, we should **wrap it in parentheses**.
+
+```sql
+INSERT INTO categories (name, parent_id) VALUES
+('Compasses', (SELECT category_id FROM categories WHERE name = 'Navigation'));
+```
