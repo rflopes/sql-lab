@@ -14,7 +14,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 02-15 | The "cheapest" products look random | DEBUG | done |
 | 02-16 | Error on the price filter | DEBUG | done |
 | 02-17 | Predict: cities and opt-ins | PREDICT | done |
-| 03-01 | Add a supplier | DML | todo |
+| 03-01 | Add a supplier | DML | done |
 | 03-02 | Deactivate one product | DML | todo |
 | 03-03 | New categories, get the ids back | DML | todo |
 | 03-04 | Rain jacket sale | DML | todo |
@@ -123,7 +123,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - You wrote your prediction on the `-- GUESS:` line before running anything.
   - `pnpm check 02-17` ran and you know why you were right or wrong. Not graded.
 
-## 03-01: Add a supplier
+## 03-01: Add a supplier ✅
 - Type: DML
 - Effort: 1 exercise (5 to 12 min)
 - Concept: INSERT

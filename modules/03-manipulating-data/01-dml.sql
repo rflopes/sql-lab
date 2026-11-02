@@ -4,5 +4,4 @@
 -- Run: pnpm check 03-01
 
 -- Write your statements below
-
-
+INSERT INTO suppliers(name, country, contact_email) VALUES ('Fjord Outfitters', 'Norway', 'hello@fjord.example')
