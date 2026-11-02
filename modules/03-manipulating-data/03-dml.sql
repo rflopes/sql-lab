@@ -6,4 +6,12 @@
 
 -- Write your statements below
 
+-- INSERT INTO categories (name, parent_id) VALUES
+--  ('Compasses', (SELECT category_id FROM categories WHERE name = 'Navigation')),
+--  ('GPS Devices', (SELECT category_id FROM categories WHERE name = 'Navigation'))
+-- RETURNING category_id, name
 
+INSERT INTO categories (name, parent_id)
+SELECT v.name, (SELECT category_id FROM categories WHERE name = 'Navigation')
+FROM (VALUES ('Compasses'), ('GPS Devices')) as v(name)
+RETURNING category_id, name
