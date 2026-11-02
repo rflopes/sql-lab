@@ -18,7 +18,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 03-02 | Deactivate one product | DML | done |
 | 03-03 | New categories, get the ids back | DML | done |
 | 03-04 | Rain jacket sale | DML | done |
-| 03-05 | Clean up empty 1-star reviews | DML | todo |
+| 03-05 | Clean up empty 1-star reviews | DML | done |
 | 03-06 | Update or add products in one go | DML | todo |
 
 Tables: categories, suppliers, products, customers, employees, orders, order_items, payments, reviews. Explore with `pnpm sql` (`\dt`, `\d table`). Money is in integer cents. "Today" is never `now()`: statements fix their own dates.
@@ -165,7 +165,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Products in other categories must not change.
   - `pnpm check 03-04` is green.
 
-## 03-05: Clean up empty 1-star reviews
+## 03-05: Clean up empty 1-star reviews ✅
 - Type: DML
 - Effort: 1 exercise (5 to 12 min)
 - Concept: DELETE

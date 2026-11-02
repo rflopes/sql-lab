@@ -5,4 +5,5 @@
 
 -- Write your statements below
 
-
+DELETE FROM reviews
+WHERE rating = 1 AND body IS NULL
