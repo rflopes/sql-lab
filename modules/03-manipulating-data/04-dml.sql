@@ -5,5 +5,5 @@
 -- Run: pnpm check 03-04
 
 -- Write your statements below
-
-
+UPDATE products SET unit_price_cents = round(unit_price_cents * 0.875)
+WHERE category_id = 22

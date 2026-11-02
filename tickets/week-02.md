@@ -17,7 +17,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 03-01 | Add a supplier | DML | done |
 | 03-02 | Deactivate one product | DML | done |
 | 03-03 | New categories, get the ids back | DML | done |
-| 03-04 | Rain jacket sale | DML | todo |
+| 03-04 | Rain jacket sale | DML | done |
 | 03-05 | Clean up empty 1-star reviews | DML | todo |
 | 03-06 | Update or add products in one go | DML | todo |
 
@@ -154,7 +154,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - The same statement must return the generated category_id and the name of the new rows (columns category_id, name).
   - `pnpm check 03-03` is green.
 
-## 03-04: Rain jacket sale
+## 03-04: Rain jacket sale ✅
 - Type: DML
 - Effort: 1 exercise (5 to 12 min)
 - Concept: UPDATE with an expression
