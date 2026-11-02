@@ -8,4 +8,9 @@
 
 -- Write your statements below
 
-
+INSERT INTO products(sku, name, category_id, unit_price_cents)
+VALUES ('TNT-0001', 'Ridge 1P Tent v2', 16, 21000),
+('NEW-0001', 'Trail Towel', 15, 1500)
+ON CONFLICT (sku) DO UPDATE SET
+  name = EXCLUDED.name,
+  unit_price_cents = EXCLUDED.unit_price_cents;

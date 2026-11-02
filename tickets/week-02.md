@@ -19,7 +19,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 03-03 | New categories, get the ids back | DML | done |
 | 03-04 | Rain jacket sale | DML | done |
 | 03-05 | Clean up empty 1-star reviews | DML | done |
-| 03-06 | Update or add products in one go | DML | todo |
+| 03-06 | Update or add products in one go | DML | done |
 
 Tables: categories, suppliers, products, customers, employees, orders, order_items, payments, reviews. Explore with `pnpm sql` (`\dt`, `\d table`). Money is in integer cents. "Today" is never `now()`: statements fix their own dates.
 
@@ -175,7 +175,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Delete the reviews that have a rating of 1 and no text (body is NULL). Keep every other review.
   - `pnpm check 03-05` is green.
 
-## 03-06: Update or add products in one go
+## 03-06: Update or add products in one go ✅
 - Type: DML
 - Effort: 1 exercise (5 to 12 min)
 - Concept: ON CONFLICT (upsert)
