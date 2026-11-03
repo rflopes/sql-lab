@@ -9,5 +9,14 @@
 -- Run: pnpm check 04-07
 
 -- Write your statements below
+CREATE TABLE wishlists (
+  wishlist_id       integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  customer_id       integer NOT NULL,
+  product_id        integer NOT NULL,
+  added_at          timestamptz NOT NULL DEFAULT now(),
 
+  CONSTRAINT wishlists_fk_customer FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+  CONSTRAINT wishlists_fk_product FOREIGN KEY (product_id) REFERENCES products(product_id),
 
+  CONSTRAINT wishlists_customer_products_key UNIQUE (customer_id, product_id)
+)
