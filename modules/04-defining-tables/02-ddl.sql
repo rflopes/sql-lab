@@ -5,4 +5,4 @@
 
 -- Write your statements below
 
-
+ALTER TABLE suppliers ADD COLUMN notes text
