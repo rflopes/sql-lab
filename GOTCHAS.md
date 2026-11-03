@@ -21,6 +21,7 @@
 - [`ON CONFLICT` (upsert)](#on-conflict-upsert)
 - [`GENERATED ALWAYS` vs `BY DEFAULT` (identity)](#generated-always-vs-by-default-identity)
 - [Upper and lower case](#upper-and-lower-case)
+- [Column vs table constraints](#column-vs-table-constraints)
 
 ---
 
@@ -235,3 +236,29 @@ Not everything in SQL ignores case:
 > 💡 **Tip:** To compare values ignoring case, use `ILIKE` or `lower(a) = lower(b)`.
 
 > 📝 **Note:** Standard SQL folds unquoted names to **uppercase**; Postgres folds them to **lowercase**. See also [Double vs single quotes](#double-vs-single-quotes).
+
+---
+
+## Column vs table constraints
+
+Both are standard SQL. The difference is **how many columns the rule touches**:
+
+| Form | Use it when | Example |
+|---|---|---|
+| **Column** constraint (inline) | The rule is about **one** column | `price numeric CHECK (price >= 0)` |
+| **Table** constraint (after the columns) | The rule involves **several** columns (required here) | `CHECK (starts_at < ends_at)`, `PRIMARY KEY (a, b)` |
+| `ALTER TABLE ... ADD CONSTRAINT` | The table **already exists** (migrations) | `ALTER TABLE events ADD CONSTRAINT ...` |
+
+```sql
+CREATE TABLE events (
+  event_id  integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  price     numeric NOT NULL CONSTRAINT events_price_positive CHECK (price >= 0),
+  starts_at timestamptz NOT NULL,
+  ends_at   timestamptz NOT NULL,
+  CONSTRAINT events_ends_after_start CHECK (starts_at < ends_at)
+);
+```
+
+> 💡 **Tip:** Name the constraints that matter (`CONSTRAINT name CHECK (...)`). The name shows up in errors (`violates check constraint "events_price_positive"`) and you need it to `DROP CONSTRAINT` later. Without one, Postgres invents it (e.g. `events_price_check`).
+
+> 📝 **Note:** A single statement is already atomic. `BEGIN`/`COMMIT` only matters when a script has **several** statements that must succeed or fail together.
