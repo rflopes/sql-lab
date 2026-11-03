@@ -57,6 +57,23 @@ WHERE city != 'Coimbra'
 
 > ⚠️ **Warning:** A row where `city` is `NULL` **won't be returned** by the `WHERE` clause, even though we might want it to be.
 
+### `NULL` in `CHECK` is the opposite
+
+`WHERE` keeps a row only when the condition is `true`. `CHECK` rejects a row only when the condition is `false`. So an unknown (`NULL`) result is **dropped** by `WHERE` but **accepted** by `CHECK`.
+
+| Where | Passes when the condition is… | A `NULL` result is… |
+|---|---|---|
+| `WHERE` | `true` only | **excluded** |
+| `CHECK` | anything but `false` | **accepted** |
+
+```sql
+CREATE TABLE pets (name text CHECK (name LIKE 'R%'));
+INSERT INTO pets VALUES ('Max');  -- ERROR: violates check constraint
+INSERT INTO pets VALUES (NULL);   -- OK: the CHECK gives NULL, not false
+```
+
+> 💡 **Tip:** `CHECK` does not stop `NULL`s. If the value is required, add `NOT NULL` too.
+
 ---
 
 ## `IS DISTINCT FROM`
