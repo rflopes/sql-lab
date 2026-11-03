@@ -20,6 +20,7 @@
 - [`ROUND` vs `CEIL`](#round-vs-ceil)
 - [`ON CONFLICT` (upsert)](#on-conflict-upsert)
 - [`GENERATED ALWAYS` vs `BY DEFAULT` (identity)](#generated-always-vs-by-default-identity)
+- [Upper and lower case](#upper-and-lower-case)
 
 ---
 
@@ -215,3 +216,22 @@ INSERT INTO pets (pet_id, name) OVERRIDING SYSTEM VALUE VALUES (5, 'Rex');
 > ⚠️ **Warning:** With `BY DEFAULT`, a manual id does **not** move the sequence forward. Insert `5` by hand and, when the sequence reaches 5, the next normal `INSERT` fails with a duplicate key.
 
 > 💡 **Tip:** Prefer `ALWAYS`: it stops ids from being set by accident.
+
+---
+
+## Upper and lower case
+
+Not everything in SQL ignores case:
+
+| What | Case-sensitive? | Example |
+|---|---|---|
+| Keywords | **no** | `SELECT` = `select` |
+| Identifiers **without** quotes | **no**: Postgres folds them to lowercase | `Pet_Id` and `PET_ID` both become `pet_id` |
+| Identifiers **with** `"double"` quotes | **yes**: kept exactly as written | `"Pet_Id"` is a different column from `pet_id` |
+| Values in `'single'` quotes | **yes** | `'Rex' = 'rex'` is `false` |
+
+> ⚠️ **Warning:** A column created as `"Pet_Id"` must be quoted forever after: `SELECT Pet_Id` looks for `pet_id` and fails. Avoid quotes and mixed case in names.
+
+> 💡 **Tip:** To compare values ignoring case, use `ILIKE` or `lower(a) = lower(b)`.
+
+> 📝 **Note:** Standard SQL folds unquoted names to **uppercase**; Postgres folds them to **lowercase**. See also [Double vs single quotes](#double-vs-single-quotes).
