@@ -5,7 +5,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 
 | Ticket | Title | Type | Status |
 | --- | --- | --- | --- |
-| 04-01 | Create the warehouses table | DDL | todo |
+| 04-01 | Create the warehouses table | DDL | done |
 | 04-02 | Notes for suppliers | DDL | todo |
 | 04-03 | Stock levels table | DDL | todo |
 | 04-04 | Coupons that cannot be nonsense | DDL | todo |
@@ -23,7 +23,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
 
 ---
 
-## 04-01: Create the warehouses table
+## 04-01: Create the warehouses table ✅
 - Type: DDL
 - Effort: 1 exercise (5 to 12 min)
 - Concept: CREATE TABLE, primary key, identity

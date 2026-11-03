@@ -7,5 +7,8 @@
 -- Run: pnpm check 04-01
 
 -- Write your statements below
-
-
+CREATE TABLE warehouses (
+  warehouse_id    integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name            text NOT NULL,
+  city            text
+);
