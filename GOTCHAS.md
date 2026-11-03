@@ -23,6 +23,8 @@
 - [Upper and lower case](#upper-and-lower-case)
 - [Column vs table constraints](#column-vs-table-constraints)
 - [`DEFAULT` does not mean `NOT NULL`](#default-does-not-mean-not-null)
+- [`PRIMARY KEY` vs `UNIQUE`](#primary-key-vs-unique)
+- [Foreign keys skip `NULL`](#foreign-keys-skip-null)
 
 ---
 
@@ -302,3 +304,51 @@ INSERT INTO players (name, pts) VALUES ('Rui', NULL);  -- pts = NULL, accepted
 > ⚠️ **Warning:** `ALTER TABLE ... ADD COLUMN x integer NOT NULL` **without** a `DEFAULT` fails on a table that already has rows (they would have no value). On an empty table it works.
 
 > 💡 **Tip:** For a required column with a starting value, use both: `ADD COLUMN x integer NOT NULL DEFAULT 0`. Existing rows get `0` in the same statement.
+
+---
+
+## `PRIMARY KEY` vs `UNIQUE`
+
+In what they enforce, `PRIMARY KEY (a, b)` is exactly `UNIQUE (a, b)` + `NOT NULL` on `a` and `b`. Both create a unique index. The differences are around it:
+
+| | `PRIMARY KEY` | `UNIQUE` |
+|---|---|---|
+| How many per table | **one** | as many as needed |
+| `NULL` allowed | no (implicit `NOT NULL`) | **yes**, unless the columns are `NOT NULL` |
+| `REFERENCES other_table` with no column | points to it | must name the column |
+| Meaning | the row's **identity** (ORMs, DB tools, replication use it) | just "no repeats" |
+
+```sql
+CREATE TABLE t (a int, b int, UNIQUE (a, b));
+INSERT INTO t VALUES (1, NULL), (1, NULL);  -- accepted: NULL is never equal to NULL
+```
+
+> ⚠️ **Warning:** A `UNIQUE` on nullable columns lets through any number of rows with `NULL`. Add `NOT NULL`, or (Postgres 15+) use `UNIQUE NULLS NOT DISTINCT (a, b)`.
+
+> 💡 **Tip:** Keep a surrogate `PRIMARY KEY` (an `id` column) and add a `UNIQUE` for the business rule ("the same pet name only once per owner").
+
+---
+
+## Foreign keys skip `NULL`
+
+A foreign key checks that a **non-`NULL`** value exists in the other table. A `NULL` is not checked at all: it means "points to nothing".
+
+```sql
+CREATE TABLE owners (owner_id int PRIMARY KEY);
+CREATE TABLE pets (owner_id int REFERENCES owners);
+INSERT INTO pets VALUES (NULL);  -- accepted: a pet with no owner
+INSERT INTO pets VALUES (99);    -- ERROR: violates foreign key constraint
+```
+
+| Value in `pets.owner_id` | FK checks it? | Result |
+|---|---|---|
+| `7` (exists in `owners`) | yes | accepted |
+| `99` (does not exist) | yes | **error** |
+| `NULL` | **no** | accepted |
+
+- Only `REFERENCES`: the link is **optional**, but valid when present.
+- `NOT NULL` + `REFERENCES`: the link is **required** and valid.
+
+> ⚠️ **Warning:** "The other table's primary key is never `NULL`" is about the **target** column. The column that points to it can still be `NULL` unless it has `NOT NULL`.
+
+> 📝 **Note:** Same pattern as [`NULL` in `CHECK`](#null-in-check-is-the-opposite) and [`PRIMARY KEY` vs `UNIQUE`](#primary-key-vs-unique): only `NOT NULL` treats `NULL` as a violation. `CHECK (col IS NOT NULL)` also works, but prefer `NOT NULL` on the column (clearer error, visible in the table definition).
