@@ -12,5 +12,13 @@
 -- Run: pnpm check 04-03
 
 -- Write your statements below
-
-
+CREATE TABLE stock_levels (
+  warehouse_id    integer NOT NULL,
+  product_id      integer NOT NULL,
+  quantity        bigint NOT NULL DEFAULT 0,
+  reserved        numeric(8,2) NOT NULL DEFAULT 0,
+  active          boolean NOT NULL DEFAULT true,
+  last_counted    date,
+  updated_at      timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (warehouse_Id, product_id)
+);

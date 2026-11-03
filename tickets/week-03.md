@@ -7,7 +7,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | --- | --- | --- | --- |
 | 04-01 | Create the warehouses table | DDL | done |
 | 04-02 | Notes for suppliers | DDL | done |
-| 04-03 | Stock levels table | DDL | todo |
+| 04-03 | Stock levels table | DDL | done |
 | 04-04 | Coupons that cannot be nonsense | DDL | todo |
 | 04-05 | Reject bad emails | DDL | todo |
 | 04-06 | Loyalty points | DDL | todo |
@@ -46,7 +46,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Add an optional text column notes to the existing table suppliers.
   - `pnpm check 04-02` is green.
 
-## 04-03: Stock levels table
+## 04-03: Stock levels table ✅
 - Type: DDL
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Types, defaults, composite primary key
