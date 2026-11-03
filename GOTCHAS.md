@@ -22,6 +22,7 @@
 - [`GENERATED ALWAYS` vs `BY DEFAULT` (identity)](#generated-always-vs-by-default-identity)
 - [Upper and lower case](#upper-and-lower-case)
 - [Column vs table constraints](#column-vs-table-constraints)
+- [`DEFAULT` does not mean `NOT NULL`](#default-does-not-mean-not-null)
 
 ---
 
@@ -279,3 +280,25 @@ CREATE TABLE events (
 > 💡 **Tip:** Name the constraints that matter (`CONSTRAINT name CHECK (...)`). The name shows up in errors (`violates check constraint "events_price_positive"`) and you need it to `DROP CONSTRAINT` later. Without one, Postgres invents it (e.g. `events_price_check`).
 
 > 📝 **Note:** A single statement is already atomic. `BEGIN`/`COMMIT` only matters when a script has **several** statements that must succeed or fail together.
+
+---
+
+## `DEFAULT` does not mean `NOT NULL`
+
+`DEFAULT` only fills a column when **no value is given**. An explicit `NULL` is a value, so it goes in. `NOT NULL` is what refuses it, and it stays on the table forever (not only while running the `ALTER`).
+
+| Only `DEFAULT 0` | `DEFAULT 0` + `NOT NULL` |
+|---|---|
+| `INSERT` without the column → `0` ✅ | `INSERT` without the column → `0` ✅ |
+| `INSERT ... VALUES (NULL)` → stores `NULL` ❌ | `INSERT ... VALUES (NULL)` → error ✅ |
+| `UPDATE ... SET pts = NULL` → stores `NULL` ❌ | `UPDATE ... SET pts = NULL` → error ✅ |
+
+```sql
+CREATE TABLE players (name text, pts integer DEFAULT 0);
+INSERT INTO players (name) VALUES ('Ana');             -- pts = 0
+INSERT INTO players (name, pts) VALUES ('Rui', NULL);  -- pts = NULL, accepted
+```
+
+> ⚠️ **Warning:** `ALTER TABLE ... ADD COLUMN x integer NOT NULL` **without** a `DEFAULT` fails on a table that already has rows (they would have no value). On an empty table it works.
+
+> 💡 **Tip:** For a required column with a starting value, use both: `ADD COLUMN x integer NOT NULL DEFAULT 0`. Existing rows get `0` in the same statement.
