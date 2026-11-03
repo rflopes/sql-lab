@@ -4,5 +4,4 @@
 -- Run: pnpm check 04-05
 
 -- Write your statements below
-
-
+ALTER TABLE customers ADD CONSTRAINT customers_valid_email CHECK (email LIKE '%@%')
