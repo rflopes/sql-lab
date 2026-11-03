@@ -4,5 +4,4 @@
 -- Run: pnpm check 04-06
 
 -- Write your statements below
-
-
+ALTER TABLE customers ADD COLUMN loyalty_points integer NOT NULL DEFAULT 0
