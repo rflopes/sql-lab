@@ -8,7 +8,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 04-01 | Create the warehouses table | DDL | done |
 | 04-02 | Notes for suppliers | DDL | done |
 | 04-03 | Stock levels table | DDL | done |
-| 04-04 | Coupons that cannot be nonsense | DDL | todo |
+| 04-04 | Coupons that cannot be nonsense | DDL | done |
 | 04-05 | Reject bad emails | DDL | todo |
 | 04-06 | Loyalty points | DDL | todo |
 | 04-07 | Wishlists | DDL | todo |
@@ -64,7 +64,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - The primary key is the pair (warehouse_id, product_id).
   - `pnpm check 04-03` is green.
 
-## 04-04: Coupons that cannot be nonsense
+## 04-04: Coupons that cannot be nonsense ✅
 - Type: DDL
 - Effort: 1 exercise (5 to 12 min)
 - Concept: CHECK, NOT NULL, text primary key

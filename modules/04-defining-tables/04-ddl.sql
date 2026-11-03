@@ -7,5 +7,8 @@
 -- Run: pnpm check 04-04
 
 -- Write your statements below
-
-
+CREATE TABLE coupons (
+  code            text PRIMARY KEY,
+  discount_pct    numeric(5,2) NOT NULL CONSTRAINT coupons_discount_pct_range CHECK (discount_pct BETWEEN 0 AND 100),
+  valid_until     date
+);
