@@ -6,4 +6,18 @@
 
 -- Write your statements below
 
+BEGIN;
 
+  CREATE TABLE trial_a (
+    id    integer
+  );
+
+  SAVEPOINT after_trial_a;
+
+  CREATE TABLE trial_b (
+    id    integer
+  );
+
+  ROLLBACK TO after_trial_a;
+
+COMMIT;
