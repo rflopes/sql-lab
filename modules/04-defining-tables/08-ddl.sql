@@ -5,4 +5,4 @@
 
 -- Write your statements below
 
-
+TRUNCATE payments RESTART IDENTITY;

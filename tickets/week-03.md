@@ -12,7 +12,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 04-05 | Reject bad emails | DDL | done |
 | 04-06 | Loyalty points | DDL | done |
 | 04-07 | Wishlists | DDL | done |
-| 04-08 | Empty the payments table | DDL | todo |
+| 04-08 | Empty the payments table | DDL | done |
 | 04-09 | Two tables, one survives | DDL | todo |
 | 04-10 | Remove reviews and weights | DDL | todo |
 | 04-11 | Tags for products | DDL | todo |
@@ -112,7 +112,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - A customer cannot have the same product twice on the list.
   - `pnpm check 04-07` is green.
 
-## 04-08: Empty the payments table
+## 04-08: Empty the payments table ✅
 - Type: DDL
 - Effort: 1 exercise (5 to 12 min)
 - Concept: TRUNCATE and identity reset
