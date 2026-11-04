@@ -25,6 +25,7 @@
 - [`DEFAULT` does not mean `NOT NULL`](#default-does-not-mean-not-null)
 - [`PRIMARY KEY` vs `UNIQUE`](#primary-key-vs-unique)
 - [Foreign keys skip `NULL`](#foreign-keys-skip-null)
+- [Filtering by a related table: `EXISTS` vs `JOIN` + `DISTINCT`](#filtering-by-a-related-table-exists-vs-join--distinct)
 
 ---
 
@@ -352,3 +353,41 @@ INSERT INTO pets VALUES (99);    -- ERROR: violates foreign key constraint
 > ⚠️ **Warning:** "The other table's primary key is never `NULL`" is about the **target** column. The column that points to it can still be `NULL` unless it has `NOT NULL`.
 
 > 📝 **Note:** Same pattern as [`NULL` in `CHECK`](#null-in-check-is-the-opposite) and [`PRIMARY KEY` vs `UNIQUE`](#primary-key-vs-unique): only `NOT NULL` treats `NULL` as a violation. `CHECK (col IS NOT NULL)` also works, but prefer `NOT NULL` on the column (clearer error, visible in the table definition).
+
+---
+
+## Filtering by a related table: `EXISTS` vs `JOIN` + `DISTINCT`
+
+A `JOIN` returns **one row per match**. When it is used only as a filter ("has at least one…"), a row that matches several times comes out **duplicated**.
+
+```sql
+-- Customers with at least one order over 100
+SELECT c.*
+FROM customers c
+JOIN orders o ON o.customer_id = c.id AND o.total > 100;
+-- a customer with 3 such orders appears 3 times
+```
+
+There are two fixes:
+
+| Fix | What it does | Problem |
+|---|---|---|
+| `SELECT DISTINCT c.*` | creates the duplicates, then **removes** them | only works while the duplicate rows are identical in **every** column; adding `o.total` to the `SELECT` brings them back; extra work (per-row subqueries run before the dedup) |
+| `WHERE EXISTS (...)` | asks "is there at least one?", so it **never creates** duplicates | none for this case |
+
+```sql
+SELECT c.*
+FROM customers c
+WHERE EXISTS (
+  SELECT 1                     -- what it selects doesn't matter
+  FROM orders o
+  WHERE o.customer_id = c.id   -- links the subquery to the outer row
+    AND o.total > 100
+);
+```
+
+> ⚠️ **Warning:** `EXISTS` takes a **subquery**, not a list: `col EXISTS (1, 4)` is a syntax error. It is a true/false condition, so it goes in `WHERE`, not in `FROM`/`JOIN`.
+
+> ⚠️ **Warning:** Without the link (`o.customer_id = c.id`), the subquery asks "is there such an order **anywhere**?" and the answer is the same for every row.
+
+> 💡 **Tip:** Use a `JOIN` when you need columns from the other table. Use `EXISTS` when you only need to **filter** by it. `c.id IN (SELECT customer_id FROM orders WHERE total > 100)` also works without duplicates.
