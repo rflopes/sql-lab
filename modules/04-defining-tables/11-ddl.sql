@@ -10,4 +10,21 @@
 
 -- Write your statements below
 
+BEGIN;
 
+CREATE TABLE tags (
+  tag_id        integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name          text NOT NULL UNIQUE
+);
+
+CREATE TABLE product_tags (
+  product_id    integer,
+  tag_id        integer,
+
+  PRIMARY KEY (product_id, tag_id),
+
+  CONSTRAINT product_tags_fk_tag FOREIGN KEY (tag_id) REFERENCES tags(tag_id),
+  CONSTRAINT product_tags_fk_product FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+COMMIT;

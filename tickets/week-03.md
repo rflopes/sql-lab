@@ -15,7 +15,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 04-08 | Empty the payments table | DDL | done |
 | 04-09 | Two tables, one survives | DDL | done |
 | 04-10 | Remove reviews and weights | DDL | done |
-| 04-11 | Tags for products | DDL | todo |
+| 04-11 | Tags for products | DDL | done |
 | 04-12 | Supplier contacts | DDL | todo |
 | 04-13 | One email, any capitalisation | DDL | todo |
 
@@ -143,7 +143,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Remove the table reviews completely, and remove the column weight_kg from products.
   - `pnpm check 04-10` is green.
 
-## 04-11: Tags for products
+## 04-11: Tags for products ✅
 - Type: DDL
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Many-to-many relationships, composite keys
