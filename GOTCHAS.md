@@ -25,6 +25,7 @@
 - [`DEFAULT` does not mean `NOT NULL`](#default-does-not-mean-not-null)
 - [`PRIMARY KEY` vs `UNIQUE`](#primary-key-vs-unique)
 - [Foreign keys skip `NULL`](#foreign-keys-skip-null)
+- [`REFERENCES` without a column](#references-without-a-column)
 - [Filtering by a related table: `EXISTS` vs `JOIN` + `DISTINCT`](#filtering-by-a-related-table-exists-vs-join--distinct)
 
 ---
@@ -353,6 +354,53 @@ INSERT INTO pets VALUES (99);    -- ERROR: violates foreign key constraint
 > ⚠️ **Warning:** "The other table's primary key is never `NULL`" is about the **target** column. The column that points to it can still be `NULL` unless it has `NOT NULL`.
 
 > 📝 **Note:** Same pattern as [`NULL` in `CHECK`](#null-in-check-is-the-opposite) and [`PRIMARY KEY` vs `UNIQUE`](#primary-key-vs-unique): only `NOT NULL` treats `NULL` as a violation. `CHECK (col IS NOT NULL)` also works, but prefer `NOT NULL` on the column (clearer error, visible in the table definition).
+
+---
+
+## `REFERENCES` without a column
+
+`REFERENCES other_table` with no column points to the other table's **primary key**. The column **name** plays no part.
+
+```sql
+CREATE TABLE teams (code text PRIMARY KEY, team_id int);
+CREATE TABLE players (team_id text REFERENCES teams);
+-- points to teams.code (the PK), not to teams.team_id
+```
+
+| Case | Result |
+|---|---|
+| Other table has a single-column PK | points to it |
+| Other table has **no** PK | error: `there is no primary key for referenced table "teams"` |
+| Other table has a **composite** PK | needs a table-level `FOREIGN KEY (a, b) REFERENCES teams` with the same number of columns |
+| Want another column | name it: `REFERENCES teams(team_id)`; it must be `PRIMARY KEY` or `UNIQUE` |
+
+### Composite primary key
+
+When the other table's PK has several columns, the FK needs the **same number of columns** and must be a **table** constraint (a column constraint covers one column only).
+
+```sql
+CREATE TABLE seasons (
+  league text,
+  year   int,
+  PRIMARY KEY (league, year)
+);
+
+CREATE TABLE matches (
+  match_id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  league   text NOT NULL,
+  year     int  NOT NULL,
+  FOREIGN KEY (league, year) REFERENCES seasons (league, year)
+);
+
+-- league text REFERENCES seasons
+-- ERROR: number of referencing and referenced columns for foreign key disagree
+```
+
+> ⚠️ **Warning:** The columns pair up by **position**, not by name: `FOREIGN KEY (year, league) REFERENCES seasons (league, year)` pairs `year` with `league` (here it fails because the types differ; with equal types it would be silently wrong).
+
+> ⚠️ **Warning:** If the names match (`supplier_id` → `suppliers.supplier_id`), it works because that column **is** the PK, not because the names match.
+
+> 📝 **Note:** Hit in 04-12 (`supplier_contacts`).
 
 ---
 
