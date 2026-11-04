@@ -5,4 +5,7 @@
 
 -- Write your statements below
 
-
+BEGIN;
+  DROP TABLE reviews;
+  ALTER TABLE products DROP COLUMN weight_kg;
+COMMIT;

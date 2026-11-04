@@ -14,7 +14,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 04-07 | Wishlists | DDL | done |
 | 04-08 | Empty the payments table | DDL | done |
 | 04-09 | Two tables, one survives | DDL | done |
-| 04-10 | Remove reviews and weights | DDL | todo |
+| 04-10 | Remove reviews and weights | DDL | done |
 | 04-11 | Tags for products | DDL | todo |
 | 04-12 | Supplier contacts | DDL | todo |
 | 04-13 | One email, any capitalisation | DDL | todo |
@@ -133,7 +133,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - When the script ends, trial_a must exist and trial_b must not. trial_b has to be created and then undone inside that same transaction; do not just skip it.
   - `pnpm check 04-09` is green.
 
-## 04-10: Remove reviews and weights
+## 04-10: Remove reviews and weights ✅
 - Type: DDL
 - Effort: 1 exercise (5 to 12 min)
 - Concept: DROP
