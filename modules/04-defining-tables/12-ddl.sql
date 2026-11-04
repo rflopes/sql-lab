@@ -11,3 +11,9 @@
 -- Write your statements below
 
 
+CREATE TABLE supplier_contacts (
+  contact_id      integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  supplier_id     integer NOT NULL REFERENCES suppliers (supplier_id) ON DELETE CASCADE,
+  name            text NOT NULL,
+  phone           text
+);

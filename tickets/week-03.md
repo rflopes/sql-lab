@@ -16,7 +16,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 04-09 | Two tables, one survives | DDL | done |
 | 04-10 | Remove reviews and weights | DDL | done |
 | 04-11 | Tags for products | DDL | done |
-| 04-12 | Supplier contacts | DDL | todo |
+| 04-12 | Supplier contacts | DDL | done |
 | 04-13 | One email, any capitalisation | DDL | todo |
 
 Tables: categories, suppliers, products, customers, employees, orders, order_items, payments, reviews. Explore with `pnpm sql` (`\dt`, `\d table`). Money is in integer cents. "Today" is never `now()`: statements fix their own dates.
@@ -153,7 +153,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Tables tags and product_tags exist as described in the file.
   - `pnpm check 04-11` is green.
 
-## 04-12: Supplier contacts
+## 04-12: Supplier contacts ✅
 - Type: DDL
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Foreign keys: what happens on delete
