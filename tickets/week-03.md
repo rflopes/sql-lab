@@ -17,7 +17,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 04-10 | Remove reviews and weights | DDL | done |
 | 04-11 | Tags for products | DDL | done |
 | 04-12 | Supplier contacts | DDL | done |
-| 04-13 | One email, any capitalisation | DDL | todo |
+| 04-13 | One email, any capitalisation | DDL | done |
 
 Tables: categories, suppliers, products, customers, employees, orders, order_items, payments, reviews. Explore with `pnpm sql` (`\dt`, `\d table`). Money is in integer cents. "Today" is never `now()`: statements fix their own dates.
 
@@ -163,7 +163,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Table supplier_contacts exists as described in the file.
   - `pnpm check 04-12` is green.
 
-## 04-13: One email, any capitalisation
+## 04-13: One email, any capitalisation ✅
 - Type: DDL
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Uniqueness on an expression

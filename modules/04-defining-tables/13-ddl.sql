@@ -6,4 +6,4 @@
 
 -- Write your statements below
 
-
+CREATE UNIQUE INDEX suppliers_unique_email ON suppliers (lower(contact_email))
