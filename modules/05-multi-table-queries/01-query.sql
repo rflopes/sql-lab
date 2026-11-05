@@ -5,5 +5,7 @@
 -- Run: pnpm check 05-01
 
 -- Write your query below
-
-
+SELECT o.order_id, o.status, c.email
+FROM orders o
+JOIN customers c ON c.customer_id = o.customer_id
+WHERE o.order_id <= 10
