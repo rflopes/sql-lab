@@ -5,5 +5,6 @@
 -- Run: pnpm check 05-04
 
 -- Write your query below
-
-
+SELECT p.product_id as product_id, p.name as product_name, s.name as supplier_name
+FROM products p
+LEFT JOIN suppliers s ON p.supplier_id = s.supplier_id
