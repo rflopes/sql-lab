@@ -6,7 +6,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | Ticket | Title | Type | Status |
 | --- | --- | --- | --- |
 | 05-01 | Orders with customer emails | QUERY | done |
-| 05-02 | Products with category names | QUERY | todo |
+| 05-02 | Products with category names | QUERY | done |
 | 05-03 | What is in order 100? | QUERY | todo |
 | 05-04 | Products and their suppliers | QUERY | todo |
 | 05-05 | Customers who never ordered | QUERY | todo |
@@ -29,7 +29,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: order_id, status, email.
   - `pnpm check 05-01` is green.
 
-## 05-02: Products with category names
+## 05-02: Products with category names ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Joining with aliases

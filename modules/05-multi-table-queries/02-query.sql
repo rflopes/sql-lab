@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT p.name as product_name, c.name as category_name
+FROM products p
+JOIN categories c ON p.category_id = c.category_id
