@@ -7,7 +7,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | --- | --- | --- | --- |
 | 05-01 | Orders with customer emails | QUERY | done |
 | 05-02 | Products with category names | QUERY | done |
-| 05-03 | What is in order 100? | QUERY | todo |
+| 05-03 | What is in order 100? | QUERY | done |
 | 05-04 | Products and their suppliers | QUERY | todo |
 | 05-05 | Customers who never ordered | QUERY | todo |
 | 05-06 | Products nobody bought | QUERY | todo |
@@ -39,7 +39,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: product_name, category_name.
   - `pnpm check 05-02` is green.
 
-## 05-03: What is in order 100?
+## 05-03: What is in order 100? ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Many-to-many through a link table

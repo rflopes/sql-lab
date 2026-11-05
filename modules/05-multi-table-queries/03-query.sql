@@ -6,4 +6,7 @@
 
 -- Write your query below
 
-
+SELECT oi.order_id, p.name as product_name, oi.quantity
+FROM order_items oi
+JOIN products p ON p.product_id = oi.product_id
+WHERE oi.order_id = 100
