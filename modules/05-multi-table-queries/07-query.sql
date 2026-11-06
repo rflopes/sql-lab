@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT e.employee_id, concat_ws(' ', e.first_name, e.last_name) AS employee_name, m.first_name || ' ' || m.last_name AS manager_name
+FROM employees e
+LEFT JOIN employees m ON e.manager_id = m.employee_id

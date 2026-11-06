@@ -11,7 +11,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 05-04 | Products and their suppliers | QUERY | done |
 | 05-05 | Customers who never ordered | QUERY | done |
 | 05-06 | Products nobody bought | QUERY | done |
-| 05-07 | Who reports to whom | QUERY | todo |
+| 05-07 | Who reports to whom | QUERY | done |
 | 05-08 | Who referred whom | QUERY | todo |
 | 05-09 | Error on the customer/order list | DEBUG | todo |
 
@@ -80,7 +80,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: product_id, name.
   - `pnpm check 05-06` is green.
 
-## 05-07: Who reports to whom
+## 05-07: Who reports to whom ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Self join
