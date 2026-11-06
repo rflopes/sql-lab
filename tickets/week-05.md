@@ -9,7 +9,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 05-11 | Employees and orders, both ways | QUERY | done |
 | 05-12 | Every supplier with every top category | QUERY | done |
 | 05-13 | One list of all emails | QUERY | done |
-| 05-14 | Ordered but never reviewed | QUERY | todo |
+| 05-14 | Ordered but never reviewed | QUERY | done |
 | 05-15 | Reviewers with cancelled orders | QUERY | todo |
 | 05-16 | A view of active products | DDL | todo |
 | 05-17 | Customers vanish from the list | DEBUG | todo |
@@ -63,7 +63,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - One column: email.
   - `pnpm check 05-13` is green.
 
-## 05-14: Ordered but never reviewed
+## 05-14: Ordered but never reviewed ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Set difference

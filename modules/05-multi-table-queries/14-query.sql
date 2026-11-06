@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT product_id FROM order_items
+EXCEPT
+SELECT r.product_id FROM reviews r
