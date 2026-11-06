@@ -6,3 +6,8 @@
 -- Write your statements below
 
 
+CREATE VIEW active_products
+AS
+SELECT product_id, name, unit_price_cents
+FROM products
+WHERE is_active

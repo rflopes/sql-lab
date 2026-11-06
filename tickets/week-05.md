@@ -11,7 +11,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 05-13 | One list of all emails | QUERY | done |
 | 05-14 | Ordered but never reviewed | QUERY | done |
 | 05-15 | Reviewers with cancelled orders | QUERY | done |
-| 05-16 | A view of active products | DDL | todo |
+| 05-16 | A view of active products | DDL | done |
 | 05-17 | Customers vanish from the list | DEBUG | todo |
 | 05-18 | Paid orders appear several times | DEBUG | todo |
 | 05-19 | Predict: one customer, two joins | PREDICT | todo |
@@ -83,7 +83,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - One column: customer_id.
   - `pnpm check 05-15` is green.
 
-## 05-16: A view of active products
+## 05-16: A view of active products ✅
 - Type: DDL
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Views
