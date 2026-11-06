@@ -8,5 +8,4 @@
 -- The query below is broken. Fix it.
 SELECT o.order_id, o.status
 FROM orders o
-JOIN order_items i ON i.order_id = o.order_id
 WHERE o.status = 'paid';

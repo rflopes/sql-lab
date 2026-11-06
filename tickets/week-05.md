@@ -13,7 +13,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 05-15 | Reviewers with cancelled orders | QUERY | done |
 | 05-16 | A view of active products | DDL | done |
 | 05-17 | Customers vanish from the list | DEBUG | done |
-| 05-18 | Paid orders appear several times | DEBUG | todo |
+| 05-18 | Paid orders appear several times | DEBUG | done |
 | 05-19 | Predict: one customer, two joins | PREDICT | todo |
 | 05-20 | Referrals across cities | QUERY | todo |
 | 05-21 | Recent buyers without reviews | QUERY | todo |
@@ -104,7 +104,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: customer_id, email, order_id.
   - `pnpm check 05-17` is green.
 
-## 05-18: Paid orders appear several times
+## 05-18: Paid orders appear several times ✅
 - Type: DEBUG
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Joins that multiply rows
