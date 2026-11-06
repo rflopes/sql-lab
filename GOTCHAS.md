@@ -18,6 +18,14 @@
   - [Subqueries need parentheses](#subqueries-need-parentheses)
   - [Filtering by a related table: `EXISTS` vs `JOIN` + `DISTINCT`](#filtering-by-a-related-table-exists-vs-join--distinct)
   - [`ROUND`, `CEIL` and `FLOOR`](#round-ceil-and-floor)
+- [Joins](#joins)
+  - [Join types](#join-types)
+  - [`ON` drops `NULL` keys](#on-drops-null-keys)
+  - [`LEFT` vs `RIGHT`: the table order matters](#left-vs-right-the-table-order-matters)
+  - [Finding rows with no match](#finding-rows-with-no-match)
+  - [A link table is often enough](#a-link-table-is-often-enough)
+  - [Joins change the grain](#joins-change-the-grain)
+  - [Join traps](#join-traps)
 - [Changing data](#changing-data)
   - [Always list the columns in `INSERT`](#always-list-the-columns-in-insert)
   - [Inserting several rows](#inserting-several-rows)
@@ -203,6 +211,114 @@ SELECT ceil(-2.5),    floor(-2.5),    round(-2.5);      --  -2 vs  -3 vs  -3
 > ⚠️ **Warning:** "Up" and "down" mean **towards bigger / smaller numbers**, not away from / towards zero. For negatives, `FLOOR(-2.5)` is `-3`, not `-2`.
 
 > 📝 **Note:** This is for `numeric`. With `double precision` (`float`), Postgres `ROUND` may round halves to the **even** number: `round(2.5::float)` gives `2`.
+
+---
+
+## Joins
+
+Toy tables used below:
+
+```
+owners: id | name        pets: id | name    | owner_id
+        10 | Ana               1 | Biscuit | 10
+        11 | Bruno             2 | Mochi   | 10
+        12 | Carla             3 | Pip     | 11
+                               4 | Rex     | NULL
+```
+
+### Join types
+
+| Join | Keeps | Toy example |
+|---|---|---|
+| `INNER JOIN` (or just `JOIN`) | matching pairs only | Rex and Carla disappear |
+| `LEFT JOIN` | all left rows; right side `NULL` when nothing matches | Rex stays, owner `NULL` |
+| `RIGHT JOIN` | all right rows (mirror of `LEFT`) | Carla stays, pet `NULL` |
+| `FULL JOIN` | all rows of both sides | Rex and Carla both stay |
+| `CROSS JOIN` | every left row with every right row, no condition | 4 × 3 = 12 rows |
+
+- Use table aliases (`p`, `o`) when a column name exists in both tables, otherwise: `column reference "name" is ambiguous`.
+- Same column name on both sides: `USING (col)` instead of `ON a.col = b.col`.
+
+> 📝 **Note:** Hit in 05-01 to 05-04.
+
+---
+
+### `ON` drops `NULL` keys
+
+`ON` works like `WHERE`: a pair survives only when the condition is **true**. `NULL = anything` is unknown, so a row whose join key is `NULL` **never matches**, whatever is on the other side. See [`NULL`](#null).
+
+```sql
+SELECT p.name, o.name FROM pets p JOIN owners o ON o.id = p.owner_id;
+-- Rex (owner_id NULL) is gone, even if owners had a row with id NULL
+```
+
+> 💡 **Tip:** Before an `INNER JOIN` on an "every X" request, check the key column with `\d`: `NOT NULL` + `REFERENCES` means no row can be lost. If either is missing, you need a `LEFT JOIN`. See [Foreign keys skip `NULL`](#foreign-keys-skip-null).
+
+> 📝 **Note:** Hit in 05-01 and 05-02.
+
+---
+
+### `LEFT` vs `RIGHT`: the table order matters
+
+`LEFT JOIN` keeps the table in `FROM`; `RIGHT JOIN` keeps the table after `JOIN`. Swapping only the table order changes the result:
+
+| Query | Keeps all | Loses |
+|---|---|---|
+| `pets LEFT JOIN owners` | pets (Rex too) | owners without pets (Carla) |
+| `owners LEFT JOIN pets` | owners (Carla too) | pets without owner (Rex) |
+| `owners RIGHT JOIN pets` | pets (Rex too) | same as `pets LEFT JOIN owners` |
+
+> 💡 **Tip:** Prefer `LEFT JOIN` only: put the table that must stay whole in `FROM`. `RIGHT JOIN` reads backwards and gets confusing with several joins.
+
+> 📝 **Note:** Hit in 05-04 (swapped the tables without `RIGHT`: 69 rows instead of 73).
+
+---
+
+### Finding rows with no match
+
+`LEFT JOIN` + `WHERE right.col IS NULL` keeps left rows that matched nothing (owners without pets).
+
+```sql
+SELECT o.id, o.name
+FROM owners o
+LEFT JOIN pets p ON p.owner_id = o.id
+WHERE p.id IS NULL;   -- Carla
+```
+
+Test a right-side column that is `NULL` **only** when there is no match:
+
+- a column used in `ON`: a real row with `NULL` there never passes `ON`, so a `NULL` in the result must be padding;
+- or the right table's primary key.
+
+> ⚠️ **Warning:** Testing any other column (`p.name IS NULL`) mixes "no match" with "matched, but that value is `NULL`".
+
+> ⚠️ **Warning:** `= NULL` never works, use `IS NULL`.
+
+> 📝 **Note:** Hit in 05-05 (`RIGHT JOIN` kept orders, so `order_id IS NULL` gave 0 rows) and 05-06.
+
+---
+
+### A link table is often enough
+
+In N:N (orders ↔ products) the link table (`order_items`) already holds both keys plus the relationship's own data (`quantity`). Join a side table only when you need its columns.
+
+> 📝 **Note:** Hit in 05-03 (order 100's lines: `order_items` + `products`, no `orders`).
+
+---
+
+### Joins change the grain
+
+A join returns one row per **matching pair**. `owners JOIN pets` gives one row per pet, not per owner. Joining the same owner to **two** one-to-many tables (pets and vet visits) gives pets × visits rows for that owner.
+
+> 💡 **Tip:** Before trusting a count or sum, ask what one row now stands for. Count before and after the join.
+
+---
+
+### Join traps
+
+- A condition on the right table in `WHERE` after a `LEFT JOIN` removes the `NULL` rows: it silently becomes an inner join. Put it in `ON`.
+- Joining through a table with several rows per key **multiplies** rows.
+- Forgetting the join condition gives a cartesian product (every row × every row). The checker stops queries that run longer than 5 seconds.
 
 ---
 
@@ -447,6 +563,8 @@ INSERT INTO pets VALUES (99);    -- ERROR: violates foreign key constraint
 - `NOT NULL` + `REFERENCES`: the link is **required** and valid.
 
 > ⚠️ **Warning:** "The other table's primary key is never `NULL`" is about the **target** column. The column that points to it can still be `NULL` unless it has `NOT NULL`.
+
+> 📝 **Note:** In the project: `products.supplier_id` is `REFERENCES` only (4 products have no supplier); `order_items.product_id` is `NOT NULL` + `REFERENCES` (every line points to a real product). Check with `\d table` (column *Nullable*). Hit in 05-04 and 05-06.
 
 > 📝 **Note:** Same pattern as [`NULL` in `CHECK`](#null-in-check-is-the-opposite) and [`PRIMARY KEY` vs `UNIQUE`](#primary-key-vs-unique): only `NOT NULL` treats `NULL` as a violation. `CHECK (col IS NOT NULL)` also works, but prefer `NOT NULL` on the column (clearer error, visible in the table definition).
 
