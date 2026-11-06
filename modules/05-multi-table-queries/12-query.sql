@@ -6,4 +6,7 @@
 
 -- Write your query below
 
-
+SELECT s.name AS supplier_name, c.name AS category_name
+FROM suppliers s
+CROSS JOIN categories c
+WHERE c.parent_id IS NULL
