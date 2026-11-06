@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT email FROM customers
+UNION
+SELECT contact_email AS email FROM suppliers

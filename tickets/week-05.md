@@ -8,7 +8,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 05-10 | Categories and their parents | QUERY | done |
 | 05-11 | Employees and orders, both ways | QUERY | done |
 | 05-12 | Every supplier with every top category | QUERY | done |
-| 05-13 | One list of all emails | QUERY | todo |
+| 05-13 | One list of all emails | QUERY | done |
 | 05-14 | Ordered but never reviewed | QUERY | todo |
 | 05-15 | Reviewers with cancelled orders | QUERY | todo |
 | 05-16 | A view of active products | DDL | todo |
@@ -53,7 +53,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: supplier_name, category_name.
   - `pnpm check 05-12` is green.
 
-## 05-13: One list of all emails
+## 05-13: One list of all emails ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Stacking results
