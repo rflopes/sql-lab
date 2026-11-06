@@ -10,7 +10,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 05-03 | What is in order 100? | QUERY | done |
 | 05-04 | Products and their suppliers | QUERY | done |
 | 05-05 | Customers who never ordered | QUERY | done |
-| 05-06 | Products nobody bought | QUERY | todo |
+| 05-06 | Products nobody bought | QUERY | done |
 | 05-07 | Who reports to whom | QUERY | todo |
 | 05-08 | Who referred whom | QUERY | todo |
 | 05-09 | Error on the customer/order list | DEBUG | todo |
@@ -70,7 +70,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Row order matters.
   - `pnpm check 05-05` is green.
 
-## 05-06: Products nobody bought
+## 05-06: Products nobody bought ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Finding rows with no match, again
