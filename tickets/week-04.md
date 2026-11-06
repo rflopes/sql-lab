@@ -12,7 +12,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 05-05 | Customers who never ordered | QUERY | done |
 | 05-06 | Products nobody bought | QUERY | done |
 | 05-07 | Who reports to whom | QUERY | done |
-| 05-08 | Who referred whom | QUERY | todo |
+| 05-08 | Who referred whom | QUERY | done |
 | 05-09 | Error on the customer/order list | DEBUG | todo |
 
 Tables: categories, suppliers, products, customers, employees, orders, order_items, payments, reviews. Explore with `pnpm sql` (`\dt`, `\d table`). Money is in integer cents. "Today" is never `now()`: statements fix their own dates.
@@ -90,7 +90,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: employee_id, employee_name, manager_name. A name is first_name, one space, last_name.
   - `pnpm check 05-07` is green.
 
-## 05-08: Who referred whom
+## 05-08: Who referred whom ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Self join on customers

@@ -5,5 +5,6 @@
 -- Run: pnpm check 05-08
 
 -- Write your query below
-
-
+SELECT c.customer_id, r.email AS referrer_email
+FROM customers c
+JOIN customers r ON r.customer_id = c.referred_by
