@@ -8,5 +8,4 @@
 -- The query below is broken. Fix it.
 SELECT c.customer_id, c.email, o.order_id
 FROM customers c
-LEFT JOIN orders o ON o.customer_id = c.customer_id
-WHERE o.status = 'cancelled';
+LEFT JOIN orders o ON o.customer_id = c.customer_id AND o.status = 'cancelled';

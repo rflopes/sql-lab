@@ -12,7 +12,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 05-14 | Ordered but never reviewed | QUERY | done |
 | 05-15 | Reviewers with cancelled orders | QUERY | done |
 | 05-16 | A view of active products | DDL | done |
-| 05-17 | Customers vanish from the list | DEBUG | todo |
+| 05-17 | Customers vanish from the list | DEBUG | done |
 | 05-18 | Paid orders appear several times | DEBUG | todo |
 | 05-19 | Predict: one customer, two joins | PREDICT | todo |
 | 05-20 | Referrals across cities | QUERY | todo |
@@ -93,7 +93,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Create a view named active_products with the columns product_id, name and unit_price_cents of the products that are active.
   - `pnpm check 05-16` is green.
 
-## 05-17: Customers vanish from the list
+## 05-17: Customers vanish from the list ✅
 - Type: DEBUG
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Outer join and WHERE
