@@ -13,7 +13,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 05-06 | Products nobody bought | QUERY | done |
 | 05-07 | Who reports to whom | QUERY | done |
 | 05-08 | Who referred whom | QUERY | done |
-| 05-09 | Error on the customer/order list | DEBUG | todo |
+| 05-09 | Error on the customer/order list | DEBUG | done |
 
 Tables: categories, suppliers, products, customers, employees, orders, order_items, payments, reviews. Explore with `pnpm sql` (`\dt`, `\d table`). Money is in integer cents. "Today" is never `now()`: statements fix their own dates.
 
@@ -100,7 +100,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: customer_id, referrer_email.
   - `pnpm check 05-08` is green.
 
-## 05-09: Error on the customer/order list
+## 05-09: Error on the customer/order list ✅
 - Type: DEBUG
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Ambiguous column names

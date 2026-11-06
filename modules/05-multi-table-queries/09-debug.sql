@@ -6,7 +6,7 @@
 -- Run: pnpm check 05-09
 
 -- The query below is broken. Fix it.
-SELECT customer_id, email, order_id
+SELECT c.customer_id, c.email, o.order_id
 FROM customers c
 JOIN orders o ON o.customer_id = c.customer_id
-WHERE order_id <= 20;
+WHERE o.order_id <= 20;
