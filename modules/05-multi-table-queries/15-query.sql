@@ -5,5 +5,6 @@
 -- Run: pnpm check 05-15
 
 -- Write your query below
-
-
+SELECT customer_id FROM reviews
+INTERSECT
+SELECT o.customer_id FROM orders o WHERE o.status = 'cancelled'
