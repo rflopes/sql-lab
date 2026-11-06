@@ -27,6 +27,7 @@
   - [A link table is often enough](#a-link-table-is-often-enough)
   - [Joins change the grain](#joins-change-the-grain)
   - [When `CROSS JOIN` is useful](#when-cross-join-is-useful)
+  - [Stacking results: `UNION`, `INTERSECT`, `EXCEPT`](#stacking-results-union-intersect-except)
   - [Join traps](#join-traps)
 - [Changing data](#changing-data)
   - [Always list the columns in `INSERT`](#always-list-the-columns-in-insert)
@@ -369,6 +370,40 @@ CROSS JOIN (SELECT sum(total) AS grand FROM sales) t;
 > ⚠️ **Warning:** Rows grow as N × M: 1 000 × 1 000 is already a million. A `JOIN` with a forgotten condition does the same by accident, so write `CROSS JOIN` explicitly when you mean it.
 
 > 📝 **Note:** Hit in 05-12 (every supplier × top-level categories: the filter goes in `WHERE`).
+
+---
+
+### Stacking results: `UNION`, `INTERSECT`, `EXCEPT`
+
+A join puts tables **side by side** (more columns). A set operation puts two `SELECT`s **one under the other** (more rows).
+
+Toy lists: `club_a` has `Ana, Rui, Rui`; `club_b` has `Rui, Eva`.
+
+| Operation | Returns | Toy example |
+|---|---|---|
+| `UNION` | rows from either side, **duplicates removed** | `Ana, Rui, Eva` |
+| `UNION ALL` | rows from either side, **all kept** | `Ana, Rui, Rui, Rui, Eva` |
+| `INTERSECT` | rows that appear on **both** sides | `Rui` |
+| `INTERSECT ALL` | same, keeping repeats (as many as the side with fewer) | `Rui` |
+| `EXCEPT` | rows from the first side **not** in the second | `Ana` |
+| `EXCEPT ALL` | same, removing one copy per match | `Ana, Rui` |
+
+```sql
+SELECT name FROM club_a
+UNION
+SELECT name FROM club_b;
+```
+
+- Both `SELECT`s need the **same number of columns** with compatible types, paired by **position**, not by name.
+- Column names come from the **first** `SELECT`; aliases in the others are ignored.
+- `ORDER BY` / `LIMIT` go **once**, at the end, and apply to the whole result.
+- When removing duplicates, two `NULL`s count as **equal** (unlike `=`): at most one `NULL` row survives.
+
+> 💡 **Tip:** Prefer `UNION ALL` when duplicates can't happen or should stay: `UNION` has to compare every row to remove them.
+
+> ⚠️ **Warning:** `EXCEPT` is not symmetric: `a EXCEPT b` ≠ `b EXCEPT a`.
+
+> 📝 **Note:** Standard SQL. Oracle calls `EXCEPT` `MINUS`. Hit in 05-13 (customer + supplier emails, distinct: `UNION`).
 
 ---
 
