@@ -20,6 +20,7 @@
   - [`ROUND`, `CEIL` and `FLOOR`](#round-ceil-and-floor)
 - [Joins](#joins)
   - [Join types](#join-types)
+  - [Where a join's `NULL`s come from](#where-a-joins-nulls-come-from)
   - [`ON` drops `NULL` keys](#on-drops-null-keys)
   - [`LEFT` vs `RIGHT`: the table order matters](#left-vs-right-the-table-order-matters)
   - [Finding rows with no match](#finding-rows-with-no-match)
@@ -240,6 +241,31 @@ owners: id | name        pets: id | name    | owner_id
 - Same column name on both sides: `USING (col)` instead of `ON a.col = b.col`.
 
 > 📝 **Note:** Hit in 05-01 to 05-04.
+
+---
+
+### Where a join's `NULL`s come from
+
+`FROM` + `JOIN` first build one combined set of rows; `SELECT` only picks columns from it. When a row has **no match**, the outer join fills **every column of the missing side** with `NULL` (padding). The side that kept the row keeps its real values, `NULL`s included.
+
+```sql
+SELECT p.name, p.owner_id, o.id, o.name
+FROM pets p
+FULL JOIN owners o ON o.id = p.owner_id;
+```
+
+| p.name | p.owner_id | o.id | o.name | Why the `NULL`s |
+|---|---|---|---|---|
+| Rex | `NULL` | `NULL` | `NULL` | `p.owner_id`: real value stored in `pets`; `o.*`: padding, no owner matched |
+| `NULL` | `NULL` | 12 | Carla | `p.*`: padding, no pet matched |
+
+> ⚠️ **Warning:** The `NULL` in a column belongs to **that column's table**. `o.id` is `NULL` on Rex's row because the `owners` side is missing, not because of anything in `pets`.
+
+> 💡 **Tip:** `RIGHT`/`LEFT` instead of `FULL` only changes **which rows survive**; it never fills a padded column. To show "this side's value, or else the other side's", use `COALESCE(a.col, b.col)`. It helps when each side has its own copy of the key (e.g. two customer lists joined by email).
+
+> 📝 **Note:** Logical order of a query: `FROM`/`JOIN` → `WHERE` → `GROUP BY` → `HAVING` → `SELECT` → `ORDER BY` → `LIMIT`. Postgres doesn't really build a temporary table; the planner may do it in another order, but the result is always as if it followed this one.
+
+> 📝 **Note:** Hit in 05-11 (thought an order without an employee got its `NULL` from `orders`; it was padding from `employees`).
 
 ---
 
