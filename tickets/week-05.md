@@ -6,7 +6,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | Ticket | Title | Type | Status |
 | --- | --- | --- | --- |
 | 05-10 | Categories and their parents | QUERY | done |
-| 05-11 | Employees and orders, both ways | QUERY | todo |
+| 05-11 | Employees and orders, both ways | QUERY | done |
 | 05-12 | Every supplier with every top category | QUERY | todo |
 | 05-13 | One list of all emails | QUERY | todo |
 | 05-14 | Ordered but never reviewed | QUERY | todo |
@@ -33,7 +33,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: product_id, category_name, parent_category_name.
   - `pnpm check 05-10` is green.
 
-## 05-11: Employees and orders, both ways
+## 05-11: Employees and orders, both ways ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Keeping unmatched rows on both sides

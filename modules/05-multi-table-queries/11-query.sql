@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT e.employee_id, e.last_name, o.order_id, o.status
+FROM employees e
+FULL JOIN orders o ON e.employee_id = o.employee_id
