@@ -6,4 +6,7 @@
 
 -- Write your query below
 
-
+SELECT p.product_id, c.name AS category_name, pc.name AS parent_category_name
+FROM products p
+JOIN categories c ON p.category_id = c.category_id
+LEFT JOIN categories pc ON c.parent_id = pc.category_id

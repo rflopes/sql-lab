@@ -5,7 +5,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 
 | Ticket | Title | Type | Status |
 | --- | --- | --- | --- |
-| 05-10 | Categories and their parents | QUERY | todo |
+| 05-10 | Categories and their parents | QUERY | done |
 | 05-11 | Employees and orders, both ways | QUERY | todo |
 | 05-12 | Every supplier with every top category | QUERY | todo |
 | 05-13 | One list of all emails | QUERY | todo |
@@ -23,7 +23,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
 
 ---
 
-## 05-10: Categories and their parents
+## 05-10: Categories and their parents ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Joining a table to itself through a link
