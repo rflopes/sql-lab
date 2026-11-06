@@ -26,6 +26,7 @@
   - [Finding rows with no match](#finding-rows-with-no-match)
   - [A link table is often enough](#a-link-table-is-often-enough)
   - [Joins change the grain](#joins-change-the-grain)
+  - [When `CROSS JOIN` is useful](#when-cross-join-is-useful)
   - [Join traps](#join-traps)
 - [Changing data](#changing-data)
   - [Always list the columns in `INSERT`](#always-list-the-columns-in-insert)
@@ -337,6 +338,37 @@ In N:N (orders ↔ products) the link table (`order_items`) already holds both k
 A join returns one row per **matching pair**. `owners JOIN pets` gives one row per pet, not per owner. Joining the same owner to **two** one-to-many tables (pets and vet visits) gives pets × visits rows for that owner.
 
 > 💡 **Tip:** Before trusting a count or sum, ask what one row now stands for. Count before and after the join.
+
+---
+
+### When `CROSS JOIN` is useful
+
+`CROSS JOIN` gives **every combination** (N × M rows) and has no `ON`. To filter one side, use `WHERE`. It is useful when the combinations are the point:
+
+| Use | Example |
+|---|---|
+| A complete grid for a report | every shop × every month, then `LEFT JOIN` the sales so a month with no sales shows `0` instead of vanishing |
+| Generating data or scenarios | sizes × colours = every product variant; teams × teams = every fixture |
+| Adding one single value to every row | a one-row subquery with the grand total, to compute each row's share |
+| Combining with a generated series | `generate_series` of dates × shops = one row per shop per day |
+
+```sql
+-- every shop with every month, sales or not
+SELECT s.name, m.month, coalesce(sum(v.total), 0) AS total
+FROM shops s
+CROSS JOIN (SELECT generate_series(1, 12) AS month) m
+LEFT JOIN sales v ON v.shop_id = s.id AND v.month = m.month
+GROUP BY s.name, m.month;
+
+-- each sale's share of the grand total
+SELECT v.id, v.total * 100.0 / t.grand AS pct
+FROM sales v
+CROSS JOIN (SELECT sum(total) AS grand FROM sales) t;
+```
+
+> ⚠️ **Warning:** Rows grow as N × M: 1 000 × 1 000 is already a million. A `JOIN` with a forgotten condition does the same by accident, so write `CROSS JOIN` explicitly when you mean it.
+
+> 📝 **Note:** Hit in 05-12 (every supplier × top-level categories: the filter goes in `WHERE`).
 
 ---
 
