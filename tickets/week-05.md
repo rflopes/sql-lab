@@ -14,7 +14,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 05-16 | A view of active products | DDL | done |
 | 05-17 | Customers vanish from the list | DEBUG | done |
 | 05-18 | Paid orders appear several times | DEBUG | done |
-| 05-19 | Predict: one customer, two joins | PREDICT | todo |
+| 05-19 | Predict: one customer, two joins | PREDICT | done |
 | 05-20 | Referrals across cities | QUERY | todo |
 | 05-21 | Recent buyers without reviews | QUERY | todo |
 | 05-22 | Cities get their own table | DDL | todo |
@@ -115,7 +115,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: order_id, status.
   - `pnpm check 05-18` is green.
 
-## 05-19: Predict: one customer, two joins
+## 05-19: Predict: one customer, two joins ✅
 - Type: PREDICT
 - Effort: 1 exercise (5 to 12 min)
 - Concept: How joins change the number of rows

@@ -2,7 +2,7 @@
 -- Concept: How joins change the number of rows
 -- Task: Customer 12 placed 2 orders. Read the query, predict how many rows it returns, write the number on the GUESS line, then run the check.
 --       Not graded. Use pnpm sql to look at that customer's order items and payments afterwards, and explain the number to yourself.
--- GUESS: 
+-- GUESS: 10
 -- Run: pnpm check 05-19
 
 SELECT o.order_id
