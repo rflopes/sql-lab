@@ -7,4 +7,8 @@
 
 -- Write your query below
 
-
+SELECT c.customer_id, c.city, r.city as referrer_city
+FROM customers c
+JOIN customers r ON c.referred_by = r.customer_id
+WHERE c.city != r.city
+ORDER BY c.customer_id

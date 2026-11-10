@@ -15,7 +15,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 05-17 | Customers vanish from the list | DEBUG | done |
 | 05-18 | Paid orders appear several times | DEBUG | done |
 | 05-19 | Predict: one customer, two joins | PREDICT | done |
-| 05-20 | Referrals across cities | QUERY | todo |
+| 05-20 | Referrals across cities | QUERY | done |
 | 05-21 | Recent buyers without reviews | QUERY | todo |
 | 05-22 | Cities get their own table | DDL | todo |
 
@@ -125,7 +125,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - You wrote your prediction on the `-- GUESS:` line before running anything.
   - `pnpm check 05-19` ran and you know why you were right or wrong. Not graded.
 
-## 05-20: Referrals across cities
+## 05-20: Referrals across cities ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: (not given)
