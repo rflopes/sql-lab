@@ -24,6 +24,7 @@
   - [`ON` drops `NULL` keys](#on-drops-null-keys)
   - [`LEFT` vs `RIGHT`: the table order matters](#left-vs-right-the-table-order-matters)
   - [Finding rows with no match](#finding-rows-with-no-match)
+  - ["Never": four ways to write it](#never-four-ways-to-write-it)
   - [A link table is often enough](#a-link-table-is-often-enough)
   - [Joins change the grain](#joins-change-the-grain)
   - [When `CROSS JOIN` is useful](#when-cross-join-is-useful)
@@ -323,6 +324,56 @@ Test a right-side column that is `NULL` **only** when there is no match:
 > ⚠️ **Warning:** `= NULL` never works, use `IS NULL`.
 
 > 📝 **Note:** Hit in 05-05 (`RIGHT JOIN` kept orders, so `order_id IS NULL` gave 0 rows) and 05-06.
+
+---
+
+### "Never": four ways to write it
+
+"Owners who have **never** had a pet" can be written four ways:
+
+```sql
+-- 1. EXCEPT
+SELECT o.id, o.name FROM owners o
+EXCEPT
+SELECT o.id, o.name FROM owners o JOIN pets p ON p.owner_id = o.id;
+
+-- 2. LEFT JOIN + IS NULL (anti-join)
+SELECT o.id, o.name FROM owners o
+LEFT JOIN pets p ON p.owner_id = o.id
+WHERE p.id IS NULL;
+
+-- 3. NOT EXISTS
+SELECT o.id, o.name FROM owners o
+WHERE NOT EXISTS (SELECT 1 FROM pets p WHERE p.owner_id = o.id);
+
+-- 4. NOT IN
+SELECT o.id, o.name FROM owners o
+WHERE o.id NOT IN (SELECT p.owner_id FROM pets p);
+```
+
+| | Compares | Duplicates | Trap |
+|---|---|---|---|
+| `EXCEPT` | the **whole row** | removed | an extra or differently written column (e.g. `email` in another case) breaks the match |
+| `LEFT JOIN … IS NULL` | the key | can appear (other joins in the query) | test a column that is `NULL` only on no match, see [Finding rows with no match](#finding-rows-with-no-match) |
+| `NOT EXISTS` | the key | never | none for this case |
+| `NOT IN` | the key | never | **one `NULL`** in the subquery → **empty** result (Rex's `owner_id` is `NULL`, so `12 NOT IN (10, 10, 11, NULL)` is unknown and even Carla disappears) |
+
+**Readability:** `EXISTS` / `NOT EXISTS` reads closest to the request: "members for whom **there is** a visit in December and **there is no** complaint". Each related table is just a condition on the row, so it never multiplies rows and needs no `DISTINCT`.
+
+```sql
+SELECT m.member_id, m.email
+FROM members m
+WHERE EXISTS (SELECT 1 FROM visits v
+              WHERE v.member_id = m.member_id
+                AND v.visited_at >= '2024-12-01 UTC' AND v.visited_at < '2025-01-01 UTC')
+  AND NOT EXISTS (SELECT 1 FROM complaints c WHERE c.member_id = m.member_id);
+```
+
+> 💡 **Tip:** Only filtering by another table → `EXISTS` / `NOT EXISTS`. Need to **show** its columns (a date, a total) → `JOIN`.
+
+> 📝 **Note:** Postgres usually runs `NOT EXISTS` and `LEFT JOIN … IS NULL` with the same plan (anti-join), so choose by readability.
+
+> 📝 **Note:** Hit in 05-21 (December buyers without reviews: solved with `EXCEPT`, then rewrote with `LEFT JOIN … IS NULL` and `NOT EXISTS`).
 
 ---
 
