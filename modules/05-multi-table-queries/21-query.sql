@@ -7,4 +7,16 @@
 
 -- Write your query below
 
-
+(
+  SELECT c.customer_id, c.email
+  FROM customers c
+  JOIN orders o ON c.customer_id = o.customer_id
+  WHERE o.ordered_at  >= '2024-12-01 00:00:00 UTC' AND ordered_at < '2025-01-01 00:00:00 UTC'
+)
+EXCEPT
+(
+  SELECT c.customer_id, c.email
+  FROM customers c
+  JOIN reviews r ON c.customer_id = r.customer_id
+)
+ORDER BY customer_id
