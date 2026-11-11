@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT product_id, round(weight_kg * 1000) AS weight_g, ceil(weight_kg / 2.5)AS boxes
+FROM products
+WHERE weight_kg IS NOT NULL
