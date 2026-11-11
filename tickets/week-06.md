@@ -9,7 +9,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 06-02 | Price range | QUERY | done |
 | 06-03 | What do we actually know about products? | QUERY | done |
 | 06-04 | Orders per status | QUERY | done |
-| 06-05 | Products per category | QUERY | todo |
+| 06-05 | Products per category | QUERY | done |
 | 06-06 | Best sellers by quantity | QUERY | todo |
 | 06-07 | How many different buyers? | QUERY | todo |
 | 06-08 | Payments by method, large ones apart | QUERY | todo |
@@ -65,7 +65,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: status, order_count.
   - `pnpm check 06-04` is green.
 
-## 06-05: Products per category
+## 06-05: Products per category ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: GROUP BY with a join

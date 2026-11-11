@@ -6,4 +6,7 @@
 
 -- Write your query below
 
-
+SELECT categories.name AS category_name, COUNT(*) AS product_count, round(AVG(products.unit_price_cents), 2 ) AS avg_price_cents
+FROM products, categories
+WHERE products.category_id = categories.category_id
+GROUP BY categories.name
