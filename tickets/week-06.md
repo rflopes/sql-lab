@@ -5,7 +5,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 
 | Ticket | Title | Type | Status |
 | --- | --- | --- | --- |
-| 06-01 | How many customers? | QUERY | todo |
+| 06-01 | How many customers? | QUERY | done |
 | 06-02 | Price range | QUERY | todo |
 | 06-03 | What do we actually know about products? | QUERY | todo |
 | 06-04 | Orders per status | QUERY | todo |
@@ -25,7 +25,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
 
 ---
 
-## 06-01: How many customers?
+## 06-01: How many customers? ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: COUNT

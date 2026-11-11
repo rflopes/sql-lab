@@ -6,4 +6,5 @@
 
 -- Write your query below
 
-
+SELECT COUNT(*) AS customer_count
+FROM customers
