@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT employees.department, STRING_AGG(last_name, ', ' ORDER BY last_name) AS last_names
+FROM employees
+GROUP BY department
