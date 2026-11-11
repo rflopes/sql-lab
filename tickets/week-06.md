@@ -19,7 +19,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 06-12 | Paid amounts are inflated | DEBUG | done |
 | 06-13 | Predict: customers and statuses | PREDICT | done |
 | 06-14 | Categories that reach many people | QUERY | done |
-| 06-15 | Payment methods in 2024 | QUERY | todo |
+| 06-15 | Payment methods in 2024 | QUERY | done |
 
 Tables: categories, suppliers, products, customers, employees, orders, order_items, payments, reviews. Explore with `pnpm sql` (`\dt`, `\d table`). Money is in integer cents. "Today" is never `now()`: statements fix their own dates.
 
@@ -169,7 +169,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: category_name, customers. Sorted by customers desc, then category_name.
   - `pnpm check 06-14` is green.
 
-## 06-15: Payment methods in 2024
+## 06-15: Payment methods in 2024 ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: (not given)
