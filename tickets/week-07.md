@@ -6,7 +6,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | Ticket | Title | Type | Status |
 | --- | --- | --- | --- |
 | 07-01 | Messy emails | QUERY | done |
-| 07-02 | Email domains | QUERY | todo |
+| 07-02 | Email domains | QUERY | done |
 | 07-03 | One contact line | QUERY | todo |
 | 07-04 | Weights and boxes | QUERY | todo |
 | 07-05 | Order dates and months | QUERY | todo |
@@ -36,7 +36,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: customer_id, email, clean_email. Only rows where clean_email differs from email.
   - `pnpm check 07-01` is green.
 
-## 07-02: Email domains
+## 07-02: Email domains ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: SPLIT_PART

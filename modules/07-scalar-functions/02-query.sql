@@ -6,4 +6,5 @@
 
 -- Write your query below
 
-
+SELECT customer_id, SPLIT_PART(TRIM(LOWER(email)), '@', 2) AS domain
+FROM customers
