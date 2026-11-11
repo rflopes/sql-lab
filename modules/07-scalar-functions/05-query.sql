@@ -7,3 +7,7 @@
 -- Write your query below
 
 
+-- SELECT order_id, CAST(ordered_at AS date) AS order_date, CAST(DATE_TRUNC('month', ordered_at) AS date) AS order_month
+SELECT order_id, ordered_at::date AS order_date, DATE_TRUNC('month', ordered_at)::date AS order_month
+FROM orders
+WHERE order_id <= 30

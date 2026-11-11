@@ -9,7 +9,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 07-02 | Email domains | QUERY | done |
 | 07-03 | One contact line | QUERY | done |
 | 07-04 | Weights and boxes | QUERY | done |
-| 07-05 | Order dates and months | QUERY | todo |
+| 07-05 | Order dates and months | QUERY | done |
 | 07-06 | Weekday and hour of orders | QUERY | todo |
 | 07-07 | Days to ship | QUERY | todo |
 | 07-08 | Number inside the sku | QUERY | todo |
@@ -66,7 +66,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: product_id, weight_g, boxes.
   - `pnpm check 07-04` is green.
 
-## 07-05: Order dates and months
+## 07-05: Order dates and months ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Dates: casting and date_trunc
