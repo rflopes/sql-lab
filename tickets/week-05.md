@@ -17,7 +17,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 05-19 | Predict: one customer, two joins | PREDICT | done |
 | 05-20 | Referrals across cities | QUERY | done |
 | 05-21 | Recent buyers without reviews | QUERY | done |
-| 05-22 | Cities get their own table | DDL | todo |
+| 05-22 | Cities get their own table | DDL | done |
 
 Tables: categories, suppliers, products, customers, employees, orders, order_items, payments, reviews. Explore with `pnpm sql` (`\dt`, `\d table`). Money is in integer cents. "Today" is never `now()`: statements fix their own dates.
 
@@ -145,7 +145,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: customer_id, email. Sorted by customer_id.
   - `pnpm check 05-21` is green.
 
-## 05-22: Cities get their own table
+## 05-22: Cities get their own table ✅
 - Type: DDL
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Normalisation: moving repeated text into its own table

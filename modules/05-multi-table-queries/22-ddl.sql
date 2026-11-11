@@ -10,4 +10,15 @@
 
 -- Write your statements below
 
+CREATE TABLE cities (
+  city_id      integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name         text NOT NULL UNIQUE
+);
 
+INSERT INTO cities(name)
+SELECT DISTINCT city FROM customers WHERE city IS NOT NULL;
+
+ALTER TABLE customers ADD COLUMN city_id integer REFERENCES cities (city_id) ON DELETE SET NULL;
+UPDATE customers SET city_id = (SELECT ct.city_id FROM cities ct WHERE ct.name = customers.city);
+
+ALTER TABLE customers DROP COLUMN city;
