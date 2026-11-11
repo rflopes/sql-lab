@@ -45,6 +45,8 @@
   - [`UNIQUE` on an expression needs an index](#unique-on-an-expression-needs-an-index)
   - [Foreign keys skip `NULL`](#foreign-keys-skip-null)
   - [`REFERENCES` without a column](#references-without-a-column)
+- [Aggregates](#aggregates)
+  - [Order inside `STRING_AGG`](#order-inside-string_agg)
 
 ---
 
@@ -758,3 +760,32 @@ CREATE TABLE matches (
 > ⚠️ **Warning:** If the names match (`supplier_id` → `suppliers.supplier_id`), it works because that column **is** the PK, not because the names match.
 
 > 📝 **Note:** Hit in 04-12 (`supplier_contacts`).
+
+---
+
+## Aggregates
+
+### Order inside `STRING_AGG`
+
+`STRING_AGG` joins values in whatever order the rows arrive, and that order is **not guaranteed**. To control it, put an `ORDER BY` **inside** the parentheses, after the separator, with **no comma**.
+
+```sql
+-- songs(album, title)
+SELECT album,
+       STRING_AGG(title, ' | ' ORDER BY title) AS tracklist
+FROM songs
+GROUP BY album;
+```
+
+| Where | What it sorts |
+|---|---|
+| `STRING_AGG(title, ', ' ORDER BY title)` | the values **inside** each text |
+| `... GROUP BY album ORDER BY album` | the **result rows** (one per album) |
+
+> ⚠️ **Warning:** An `ORDER BY` at the end of the query does not sort the names inside the text; it only sorts the rows.
+
+> ⚠️ **Warning:** The argument is a column or expression of the group's rows, not a query: `STRING_AGG(SELECT title FROM songs, ', ')` is a syntax error. And the separator is a value, so it takes **single** quotes (`', '`); `", "` would be read as a column name.
+
+> 📝 **Note:** The same `ORDER BY` inside the parentheses works for other order-sensitive aggregates, such as `ARRAY_AGG`.
+
+> 📝 **Note:** Hit in 06-09 (employees per department).
