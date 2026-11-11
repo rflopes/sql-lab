@@ -6,6 +6,6 @@
 -- Run: pnpm check 06-11
 
 -- The query below is broken. Fix it.
-SELECT category_id, name, COUNT(*) AS product_count
+SELECT category_id, COUNT(*) AS product_count
 FROM products
 GROUP BY category_id;

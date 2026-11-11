@@ -15,7 +15,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 06-08 | Payments by method, large ones apart | QUERY | done |
 | 06-09 | Employees per department, as text | QUERY | done |
 | 06-10 | Error on the frequent customers | DEBUG | done |
-| 06-11 | Error on the product count | DEBUG | todo |
+| 06-11 | Error on the product count | DEBUG | done |
 | 06-12 | Paid amounts are inflated | DEBUG | todo |
 | 06-13 | Predict: customers and statuses | PREDICT | todo |
 | 06-14 | Categories that reach many people | QUERY | todo |
@@ -126,7 +126,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: customer_id, order_count.
   - `pnpm check 06-10` is green.
 
-## 06-11: Error on the product count
+## 06-11: Error on the product count ✅
 - Type: DEBUG
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Columns that are not grouped
