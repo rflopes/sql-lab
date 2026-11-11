@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT payments.method, COUNT(*) AS payment_count, COUNT(*) FILTER (WHERE amount_cents >= 20000) AS large_count
+FROM payments
+GROUP BY payments.method

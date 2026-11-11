@@ -12,7 +12,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 06-05 | Products per category | QUERY | done |
 | 06-06 | Best sellers by quantity | QUERY | done |
 | 06-07 | How many different buyers? | QUERY | done |
-| 06-08 | Payments by method, large ones apart | QUERY | todo |
+| 06-08 | Payments by method, large ones apart | QUERY | done |
 | 06-09 | Employees per department, as text | QUERY | todo |
 | 06-10 | Error on the frequent customers | DEBUG | todo |
 | 06-11 | Error on the product count | DEBUG | todo |
@@ -95,7 +95,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: product_id, buyers.
   - `pnpm check 06-07` is green.
 
-## 06-08: Payments by method, large ones apart
+## 06-08: Payments by method, large ones apart ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: FILTER
