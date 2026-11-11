@@ -8,5 +8,5 @@
 -- The query below is broken. Fix it.
 SELECT customer_id, COUNT(*) AS order_count
 FROM orders
-WHERE COUNT(*) >= 10
-GROUP BY customer_id;
+GROUP BY customer_id
+HAVING COUNT(*) >= 10

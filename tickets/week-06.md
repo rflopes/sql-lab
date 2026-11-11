@@ -14,7 +14,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 06-07 | How many different buyers? | QUERY | done |
 | 06-08 | Payments by method, large ones apart | QUERY | done |
 | 06-09 | Employees per department, as text | QUERY | done |
-| 06-10 | Error on the frequent customers | DEBUG | todo |
+| 06-10 | Error on the frequent customers | DEBUG | done |
 | 06-11 | Error on the product count | DEBUG | todo |
 | 06-12 | Paid amounts are inflated | DEBUG | todo |
 | 06-13 | Predict: customers and statuses | PREDICT | todo |
@@ -115,7 +115,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: department, last_names.
   - `pnpm check 06-09` is green.
 
-## 06-10: Error on the frequent customers
+## 06-10: Error on the frequent customers ✅
 - Type: DEBUG
 - Effort: 1 exercise (5 to 12 min)
 - Concept: WHERE versus HAVING
