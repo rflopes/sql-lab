@@ -7,7 +7,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | --- | --- | --- | --- |
 | 07-01 | Messy emails | QUERY | done |
 | 07-02 | Email domains | QUERY | done |
-| 07-03 | One contact line | QUERY | todo |
+| 07-03 | One contact line | QUERY | done |
 | 07-04 | Weights and boxes | QUERY | todo |
 | 07-05 | Order dates and months | QUERY | todo |
 | 07-06 | Weekday and hour of orders | QUERY | todo |
@@ -46,7 +46,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: customer_id, domain.
   - `pnpm check 07-02` is green.
 
-## 07-03: One contact line
+## 07-03: One contact line ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Concatenation and NULL

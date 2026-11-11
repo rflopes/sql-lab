@@ -5,5 +5,5 @@
 -- Run: pnpm check 07-03
 
 -- Write your query below
-
-
+SELECT customer_id, CONCAT_WS(' / ',city, phone) AS contact
+FROM customers
