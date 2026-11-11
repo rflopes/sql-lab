@@ -8,4 +8,12 @@
 
 -- Write your query below
 
-
+SELECT c.name AS category_name, COUNT(DISTINCT customer_id) AS customers
+FROM categories c
+JOIN products p ON p.category_id = c.category_id
+JOIN order_items oi ON oi.product_id = p.product_id
+JOIN orders o ON o.order_id = oi.order_id
+WHERE o.ordered_at >= '2025-01-01 00:00:00 UTC' AND o.ordered_at < '2026-01-01 00:00:00 UTC'
+GROUP BY c.category_id
+HAVING COUNT(DISTINCT customer_id) >= 20
+ORDER BY customers DESC, category_name
