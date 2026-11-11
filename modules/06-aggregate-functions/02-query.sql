@@ -6,4 +6,5 @@
 
 -- Write your query below
 
-
+SELECT MIN(unit_price_cents) AS min_price, MAX(unit_price_cents) AS max_price,  round(AVG(unit_price_cents), 2) AS avg_price
+FROM products
