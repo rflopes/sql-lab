@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT customer_id, email, TRIM(LOWER(email)) AS clean_email
+FROM customers
+WHERE email != TRIM(LOWER(email))
