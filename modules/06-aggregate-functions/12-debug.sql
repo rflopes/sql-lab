@@ -8,7 +8,6 @@
 -- The query below is broken. Fix it.
 SELECT o.order_id, SUM(p.amount_cents) AS paid_cents
 FROM orders o
-JOIN order_items i ON i.order_id = o.order_id
 JOIN payments p ON p.order_id = o.order_id
 WHERE o.order_id <= 50
 GROUP BY o.order_id
