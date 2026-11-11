@@ -5,5 +5,7 @@
 -- Run: pnpm check 06-06
 
 -- Write your query below
-
-
+SELECT product_id, SUM(quantity) AS total_qty
+FROM order_items
+GROUP BY product_id
+HAVING SUM(quantity) >= 200

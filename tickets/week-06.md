@@ -10,7 +10,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 06-03 | What do we actually know about products? | QUERY | done |
 | 06-04 | Orders per status | QUERY | done |
 | 06-05 | Products per category | QUERY | done |
-| 06-06 | Best sellers by quantity | QUERY | todo |
+| 06-06 | Best sellers by quantity | QUERY | done |
 | 06-07 | How many different buyers? | QUERY | todo |
 | 06-08 | Payments by method, large ones apart | QUERY | todo |
 | 06-09 | Employees per department, as text | QUERY | todo |
@@ -75,7 +75,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: category_name, product_count, avg_price_cents.
   - `pnpm check 06-05` is green.
 
-## 06-06: Best sellers by quantity
+## 06-06: Best sellers by quantity ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: HAVING and SUM
