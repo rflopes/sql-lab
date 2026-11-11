@@ -17,7 +17,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 06-10 | Error on the frequent customers | DEBUG | done |
 | 06-11 | Error on the product count | DEBUG | done |
 | 06-12 | Paid amounts are inflated | DEBUG | done |
-| 06-13 | Predict: customers and statuses | PREDICT | todo |
+| 06-13 | Predict: customers and statuses | PREDICT | done |
 | 06-14 | Categories that reach many people | QUERY | todo |
 | 06-15 | Payment methods in 2024 | QUERY | todo |
 
@@ -149,7 +149,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Row order matters.
   - `pnpm check 06-12` is green.
 
-## 06-13: Predict: customers and statuses
+## 06-13: Predict: customers and statuses ✅
 - Type: PREDICT
 - Effort: 1 exercise (5 to 12 min)
 - Concept: What is one row of a grouped result?
