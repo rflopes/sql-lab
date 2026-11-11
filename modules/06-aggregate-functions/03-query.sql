@@ -6,4 +6,5 @@
 
 -- Write your query below
 
-
+SELECT COUNT(*) AS total_products, COUNT(weight_kg) AS with_weight, COUNT(supplier_id) AS with_supplier
+FROM products;

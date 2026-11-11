@@ -7,7 +7,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | --- | --- | --- | --- |
 | 06-01 | How many customers? | QUERY | done |
 | 06-02 | Price range | QUERY | done |
-| 06-03 | What do we actually know about products? | QUERY | todo |
+| 06-03 | What do we actually know about products? | QUERY | done |
 | 06-04 | Orders per status | QUERY | todo |
 | 06-05 | Products per category | QUERY | todo |
 | 06-06 | Best sellers by quantity | QUERY | todo |
@@ -45,7 +45,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: min_price, max_price, avg_price.
   - `pnpm check 06-02` is green.
 
-## 06-03: What do we actually know about products?
+## 06-03: What do we actually know about products? ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: COUNT(*) versus COUNT(column)
