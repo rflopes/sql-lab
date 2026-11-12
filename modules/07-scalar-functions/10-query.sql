@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT oi.order_item_id, ROUND(oi.quantity * (oi.unit_price_cents - (oi.unit_price_cents * COALESCE(oi.discount_pct, 0) / 100))) AS net_cents
+FROM orders o, order_items oi
+WHERE o.order_id <= 25 AND o.order_id = oi.order_id;

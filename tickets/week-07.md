@@ -14,7 +14,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 07-07 | Days to ship | QUERY | done |
 | 07-08 | Number inside the sku | QUERY | done |
 | 07-09 | Price bands | QUERY | done |
-| 07-10 | Line totals after discount | QUERY | todo |
+| 07-10 | Line totals after discount | QUERY | done |
 | 07-11 | Email providers of buyers | QUERY | todo |
 | 07-12 | Shipping speed in 2024 | QUERY | todo |
 | 07-13 | Products with a season (jsonb) | QUERY | todo |
@@ -116,7 +116,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: product_id, price_band.
   - `pnpm check 07-09` is green.
 
-## 07-10: Line totals after discount
+## 07-10: Line totals after discount ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: COALESCE
