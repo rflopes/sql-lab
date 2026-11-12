@@ -52,6 +52,7 @@
   - [Number functions](#number-functions)
   - [Casting: `CAST` and `::`](#casting-cast-and-)
   - [Date and time functions](#date-and-time-functions)
+  - [Conditional expressions](#conditional-expressions)
   - [Casting text that may not be a number](#casting-text-that-may-not-be-a-number)
 
 ---
@@ -1122,6 +1123,97 @@ FROM (VALUES (interval '1 day 2 hours 30 minutes')) AS t(waited);
 ```
 
 > 📝 **Note:** Hit in 07-01 to 07-08.
+
+### Conditional expressions
+
+Not functions strictly speaking, but they also work on one row at a time and return one value per row. PostgreSQL documents them together under "Conditional Expressions".
+
+#### `CASE`
+
+Returns a different value depending on conditions: `CASE WHEN condition THEN value ... ELSE value END`.
+
+`CASE` checks the `WHEN`s **in order** and returns the first one that is true. Any comparison with `NULL` is unknown (never true), so a `NULL` value skips every `WHEN` and lands in the `ELSE`. With no `ELSE`, `CASE` returns `NULL`.
+
+```sql
+SELECT price,
+       CASE WHEN price < 5000  THEN 'budget'
+            WHEN price < 15000 THEN 'mid'
+            ELSE 'premium'
+       END AS with_else,
+       CASE WHEN price < 5000   THEN 'budget'
+            WHEN price < 15000  THEN 'mid'
+            WHEN price >= 15000 THEN 'premium'
+       END AS no_else,
+       CASE WHEN price IS NULL  THEN 'unknown'
+            WHEN price < 5000   THEN 'budget'
+            WHEN price < 15000  THEN 'mid'
+            ELSE 'premium'
+       END AS null_first
+FROM (VALUES (1200), (9900), (15000), (NULL::integer)) AS items(price);
+--  price  | with_else | no_else | null_first
+--    1200 | budget    | budget  | budget
+--    9900 | mid       | mid     | mid
+--   15000 | premium   | premium | premium
+--  (null) | premium   | (null)  | unknown      <- with_else puts "no price" in premium
+```
+
+| Version | `NULL` price gives | Use when |
+|---|---|---|
+| `ELSE` as the last band | the last band (wrong) | the column is `NOT NULL` |
+| every band in a `WHEN`, no `ELSE` | `NULL` | "no value" should stay `NULL` |
+| `WHEN x IS NULL` first | a label (`'unknown'`) | a report must show how many have no value |
+
+> ⚠️ **Warning:** `ELSE` means "everything else, **including `NULL`**". Use it only when that is what you want.
+
+> 💡 **Tip:** Because the `WHEN`s are checked in order, `WHEN price < 15000` after `WHEN price < 5000` already means "5000 to 14999". No need for `BETWEEN`.
+
+> 📝 **Note:** Hit in 07-09 (price bands; safe there because `unit_price_cents` is `NOT NULL`).
+
+#### `COALESCE(a, b, ...)`
+
+Returns the **first value that is not `NULL`**, reading left to right. If all are `NULL`, returns `NULL`. Use it to give a `NULL` a fallback value.
+
+```sql
+SELECT nickname, first_name,
+       COALESCE(nickname, first_name, 'friend') AS greeting_name
+FROM (VALUES ('Tó', 'António'), (NULL, 'Rita'), (NULL, NULL)) AS people(nickname, first_name);
+--  nickname | first_name | greeting_name
+--  Tó       | António    | Tó
+--  (null)   | Rita       | Rita
+--  (null)   | (null)     | friend
+```
+
+```sql
+-- arithmetic with NULL gives NULL; COALESCE first
+SELECT NULL + 1, COALESCE(NULL, 5) + 1;
+--  (null) | 6
+```
+
+> ⚠️ **Warning:** All the arguments must have compatible types: `COALESCE(1, 'x')` fails with `invalid input syntax for type integer: "x"`.
+
+> 💡 **Tip:** `COALESCE` and `NULLIF` are opposites: `COALESCE` turns `NULL` into a value, `NULLIF` turns a value into `NULL`.
+
+#### `NULLIF(a, b)`
+
+Returns `NULL` when `a = b`, otherwise `a`. Use it to turn a "fake empty" value (`''`, `0`) into a real `NULL`.
+
+```sql
+-- '' from SPLIT_PART becomes NULL
+SELECT domain, NULLIF(domain, '') AS domain_or_null
+FROM (VALUES ('mail.com'), ('')) AS t(domain);
+--  domain   | domain_or_null
+--  mail.com | mail.com
+--           | (null)
+```
+
+```sql
+-- avoid "division by zero": dividing by NULL gives NULL instead of an error
+SELECT total, orders, total / NULLIF(orders, 0) AS avg_per_order
+FROM (VALUES (300, 3), (500, 0)) AS t(total, orders);
+--  total | orders | avg_per_order
+--    300 |      3 |           100
+--    500 |      0 |        (null)
+```
 
 ### Casting text that may not be a number
 
