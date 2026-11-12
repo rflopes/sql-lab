@@ -47,6 +47,8 @@
   - [`REFERENCES` without a column](#references-without-a-column)
 - [Aggregates](#aggregates)
   - [Order inside `STRING_AGG`](#order-inside-string_agg)
+- [Scalar functions](#scalar-functions)
+  - [Casting text that may not be a number](#casting-text-that-may-not-be-a-number)
 
 ---
 
@@ -789,3 +791,35 @@ GROUP BY album;
 > 📝 **Note:** The same `ORDER BY` inside the parentheses works for other order-sensitive aggregates, such as `ARRAY_AGG`.
 
 > 📝 **Note:** Hit in 06-09 (employees per department).
+
+---
+
+## Scalar functions
+
+### Casting text that may not be a number
+
+`CAST(text AS integer)` fails on anything that is not a valid integer, and **one bad row makes the whole query fail**:
+
+```sql
+SELECT CAST('' AS integer);
+-- ERROR: invalid input syntax for type integer: ""
+```
+
+A common source of `''`: `SPLIT_PART` returns an **empty string** (not `NULL`) when the separator or the part is missing: `SPLIT_PART('abc', '-', 2)` is `''`.
+
+Ways around it (made-up table `codes(code)`, values like `'ABC-0012'`):
+
+| Approach | Example | Covers |
+|---|---|---|
+| `NULLIF` | `CAST(NULLIF(SPLIT_PART(code, '-', 2), '') AS integer)` | only the empty string |
+| Check with a regex first | `CASE WHEN SPLIT_PART(code, '-', 2) ~ '^[0-9]+$' THEN CAST(SPLIT_PART(code, '-', 2) AS integer) END` | anything that is not only digits |
+| Extract the digits | `CAST(SUBSTRING(code FROM '[0-9]+') AS integer)` | no digits at all (gives `NULL`); does not depend on the `-` |
+| `pg_input_is_valid` (PostgreSQL 16+) | `CASE WHEN pg_input_is_valid(SPLIT_PART(code, '-', 2), 'integer') THEN CAST(SPLIT_PART(code, '-', 2) AS integer) END` | everything, including numbers too big for `integer` |
+
+> 📝 **Note:** `NULLIF(a, b)` returns `NULL` when `a = b`, otherwise `a`. Casting `NULL` gives `NULL`, no error.
+
+> 📝 **Note:** A `CASE` without `ELSE` returns `NULL` when no branch matches.
+
+> 💡 **Tip:** Prefer turning bad values into `NULL` and counting them over letting the query fail: bad data should show up in a report, not stop it.
+
+> 📝 **Note:** Hit in 07-02 (`SPLIT_PART` gives `''`) and 07-08 (sku number).

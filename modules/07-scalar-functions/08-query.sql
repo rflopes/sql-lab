@@ -6,4 +6,5 @@
 
 -- Write your query below
 
-
+SELECT product_id, sku, CAST(NULLIF(SPLIT_PART(sku, '-', 2), '') AS integer) AS sku_number
+FROM products
