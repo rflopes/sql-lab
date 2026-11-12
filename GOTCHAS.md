@@ -20,6 +20,7 @@
   - [Subqueries need parentheses](#subqueries-need-parentheses)
   - [Filtering by a related table: `EXISTS` vs `JOIN` + `DISTINCT`](#filtering-by-a-related-table-exists-vs-join--distinct)
   - [`IN` vs `EXISTS`: where the link goes](#in-vs-exists-where-the-link-goes)
+  - [A table that points to itself: children vs siblings](#a-table-that-points-to-itself-children-vs-siblings)
   - [`ROUND`, `CEIL` and `FLOOR`](#round-ceil-and-floor)
 - [Joins](#joins)
   - [Join types](#join-types)
@@ -338,6 +339,55 @@ WHERE EXISTS (
 > 📝 **Note:** For `NOT IN` vs `NOT EXISTS`, see ["Never": four ways to write it](#never-four-ways-to-write-it): a single `NULL` in the list empties `NOT IN`.
 
 > 📝 **Note:** Hit in sql-lab 08-02.
+
+### A table that points to itself: children vs siblings
+
+In a tree stored in one table, each row has a `parent_id` that points to **another row of the same table**. Top-level rows have `parent_id = NULL`.
+
+Made-up table `folders(folder_id, name, parent_id)`:
+
+```
+ folder_id | name   | parent_id
+         1 | Home   | (null)
+         2 | Photos | 1
+         3 | Music  | 1
+         4 | 2024   | 2
+```
+
+Goal: folders with **no subfolders** (leaves: 3 and 4).
+
+**1. Two copies of the same table need two aliases.** Name them after their role, so each side of the `=` says which row it is:
+
+```sql
+SELECT f.folder_id, f.name
+FROM folders f                        -- the folder we are checking
+WHERE NOT EXISTS (
+  SELECT 1 FROM folders child         -- a possible child of f
+  WHERE child.parent_id = f.folder_id
+);
+```
+
+**2. Read the link aloud before running it.** The two links look alike, but they ask different questions (`child` and `sibling` are the alias of the inner copy, `f` is the outer row):
+
+| Link | Reads as | Finds |
+|---|---|---|
+| `child.parent_id = f.folder_id` | "is there a row whose parent **is me**?" | children ✅ |
+| `sibling.parent_id = f.parent_id` | "is there a row with **the same parent as me**?" | siblings ❌ (and `f` itself) |
+
+With the sibling link, `NOT EXISTS` is false for almost every row: each row is its own sibling. Only top-level rows pass, because `NULL = NULL` is unknown, so nothing matches them. A result that is exactly "the top-level rows" is a sign the link is wrong.
+
+**3. `NOT IN` on `parent_id` returns nothing.** The list `SELECT parent_id FROM folders` contains `NULL` (from `Home`), and one `NULL` makes every `NOT IN` unknown (see ["Never": four ways to write it](#never-four-ways-to-write-it)):
+
+```sql
+WHERE f.folder_id NOT IN (SELECT parent_id FROM folders);                            -- 0 rows
+WHERE f.folder_id NOT IN (SELECT parent_id FROM folders WHERE parent_id IS NOT NULL); -- works
+```
+
+`NOT EXISTS` does not need the `IS NOT NULL`: a `NULL` `parent_id` never equals anything, so it just doesn't match.
+
+> 💡 **Tip:** Several "has no ..." conditions are several `NOT EXISTS` joined with `AND`, one per related table.
+
+> 📝 **Note:** Hit in sql-lab 08-03.
 
 ---
 
