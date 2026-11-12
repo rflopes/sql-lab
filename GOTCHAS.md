@@ -55,6 +55,7 @@
   - [Casting: `CAST` and `::`](#casting-cast-and-)
   - [Date and time functions](#date-and-time-functions)
   - [Conditional expressions](#conditional-expressions)
+  - [`jsonb`](#jsonb)
   - [Your own helper functions: `CREATE FUNCTION`](#your-own-helper-functions-create-function)
   - [Casting text that may not be a number](#casting-text-that-may-not-be-a-number)
 
@@ -1303,6 +1304,145 @@ FROM (VALUES (300, 3), (500, 0)) AS t(total, orders);
 --    300 |      3 |           100
 --    500 |      0 |        (null)
 ```
+
+### `jsonb`
+
+A `jsonb` column holds a JSON document per row. Two families of operators: some **read a value** out of it, others **test** it (true/false, for the `WHERE`).
+
+The examples use a made-up table `items(id, info)`:
+
+```sql
+SELECT ... FROM (VALUES
+  (1, '{"size": "L", "tags": ["new", "sale"], "dims": {"w": 30, "h": 20}}'::jsonb),
+  (2, '{"size": "M"}'::jsonb),
+  (3, '{"tags": ["sale"]}'::jsonb)
+) AS items(id, info);
+```
+
+#### `->` vs `->>` vs `['key']`
+
+The difference is the **type of the result**: `jsonb` or `text`.
+
+| Form | Returns | `info ... 'size'` on row 1 | Use it to |
+|---|---|---|---|
+| `info -> 'size'` | `jsonb` | `"L"` (with quotes) | keep going deeper, or test with `?` / `@>` |
+| `info['size']` (PostgreSQL 14+) | `jsonb` | `"L"` (with quotes) | same as `->`, just easier to read |
+| `info ->> 'size'` | `text` | `L` | show the value, compare with text, cast to a number |
+
+```sql
+SELECT id, info -> 'size' AS arrow, info['size'] AS subscript, info ->> 'size' AS as_text,
+       pg_typeof(info['size']) AS t1, pg_typeof(info ->> 'size') AS t2
+FROM ... ;
+--  id | arrow  | subscript | as_text | t1    | t2
+--   1 | "L"    | "L"       | L       | jsonb | text
+--   3 | (null) | (null)    | (null)  | jsonb | text   <- missing key gives NULL, no error
+```
+
+> ⚠️ **Warning:** `info['size']` and `info -> 'size'` are **not text**. The quotes in `"L"` are part of the value, so the checker sees `"\"L\""`. If the task says "as text", use `->>`.
+
+> 📝 **Note:** There is no subscript form of `->>`. If you want text out of `info['size']`, you need `->>` (or `info['size'] #>> '{}'`). `info['size']::text` keeps the quotes: `"L"`.
+
+> 📝 **Note:** `pg_typeof(x)` shows the type of any expression. Handy when you are not sure what an operator returns.
+
+#### Going deeper: nested keys and array positions
+
+```sql
+SELECT info['dims']['w']       AS a,   -- jsonb 30
+       info -> 'dims' ->> 'w'  AS b,   -- text '30': only the LAST step is ->>
+       info #>> '{dims,w}'     AS c,   -- text '30': a whole path in one go
+       info['tags'][0]         AS d,   -- jsonb "new": arrays count from 0
+       info['tags'][-1]        AS e    -- jsonb "sale": negative counts from the end
+FROM ... WHERE id = 1;
+```
+
+> ⚠️ **Warning:** JSON arrays count from **0**. PostgreSQL arrays (`ARRAY[...]`) and `SPLIT_PART` count from **1**.
+
+#### Precedence: `::` and `+` bind tighter than `->>`
+
+`::` is applied before `->>`, so in `info ->> 'size'::jsonb` the cast runs on `'size'`, not on the result:
+
+```sql
+SELECT info ->> 'size'::jsonb FROM ... ;
+-- ERROR: invalid input syntax for type json
+-- DETAIL: Token "size" is invalid.          <- 'size' is not valid JSON
+
+SELECT info ->> 'w' + 1 FROM ... ;
+-- ERROR: invalid input syntax for type integer: "w"   <- 'w' + 1 ran first
+```
+
+Put parentheses around the part that reads the value:
+
+```sql
+SELECT (info -> 'dims' ->> 'w')::integer + 1 FROM ... ;   -- 31
+```
+
+> 💡 **Tip:** When an error says the **key name** is invalid (`Token "size"`, `"w"`), the operator order is the problem, not the data.
+
+> 📝 **Note:** Hit in 07-14 (`specs->>'colors'::jsonb`).
+
+#### Testing: `?`, `?|`, `?&`, `@>`
+
+| Test | True when | Row 1 | Row 2 | Row 3 |
+|---|---|---|---|---|
+| `info ? 'tags'` | the **key** exists at the top level | t | f | t |
+| `info['tags'] ? 'sale'` | the **array** has the string `"sale"` | t | (null) | t |
+| `info ?\| array['size', 'x']` | **any** of these keys exists | t | t | f |
+| `info ?& array['size', 'tags']` | **all** of these keys exist | t | f | f |
+| `info @> '{"tags": ["sale"]}'` | `info` **contains** this piece of JSON | t | f | t |
+
+`?` means "is this key here" on an object, and "is this string an element" on an array.
+
+> ⚠️ **Warning:** `?` only finds **strings**, and only exact ones: `'["new","sale"]' ? 'sal'` and `? 'SALE'` are false, and `'[3]' ? '3'` is false (`3` is a number). For numbers, use `@>`: `info['n'] @> '3'`.
+
+> ⚠️ **Warning:** With `@>`, the shape must match: `{"tags": "sale"}` is **false** (a string, not an array); `{"tags": ["sale"]}` is true.
+
+#### A missing key gives `NULL`, and `NULL` filters the row out
+
+`info['tags']` on row 2 is `NULL`, so `info['tags'] ? 'sale'` is `NULL`, and `WHERE` keeps only `true`. You do not need `info ? 'tags' AND ...` first to avoid an error: there is no error.
+
+```sql
+SELECT id FROM ... WHERE info['tags'] ? 'sale';
+--  1
+--  3
+```
+
+> 📝 **Note:** A key with a JSON `null` value is different from a missing key: `'{"a": null}'::jsonb ? 'a'` is **true**, `-> 'a'` gives the JSON value `null`, and `->> 'a'` gives SQL `NULL`.
+
+#### Comparing a value: text or JSON
+
+```sql
+WHERE info ->> 'size' = 'L'      -- text vs text: the simple way
+WHERE info['size'] = '"L"'       -- jsonb vs jsonb: the quotes are needed
+WHERE (info ->> 'w')::integer > 25   -- numbers come out of ->> as text: cast them
+```
+
+> ⚠️ **Warning:** `info ->> 'w' > '25'` compares **text**: `'100' < '25'` because `'1'` comes before `'2'`. Cast before comparing numbers.
+
+#### `json` vs `jsonb`
+
+| | `json` | `jsonb` |
+|---|---|---|
+| Stores | the text as typed (spaces, key order, duplicate keys) | a parsed binary form |
+| `->`, `->>`, `#>>` | yes | yes |
+| `['key']` | no: `cannot subscript type json` | yes |
+| `?`, `?\|`, `?&`, `@>` | no: `operator does not exist: json ? unknown` | yes |
+
+If a column is `json`, cast it once: `info::jsonb ? 'tags'`. On a `jsonb` column, `::jsonb` changes nothing. Check the type with `\d table_name` in `psql`.
+
+#### One row per array element: `jsonb_array_elements_text`
+
+Not a scalar function: it returns **several rows** per input row, so the row count changes (like a join).
+
+```sql
+SELECT id, tag
+FROM ..., jsonb_array_elements_text(info['tags']) AS tag;
+--  id | tag
+--   1 | new
+--   1 | sale
+--   3 | sale      <- row 2 disappears: no tags, no rows
+```
+
+> 📝 **Note:** Hit in 07-13 (`specs['season']` gave `"3-season"` with quotes) and 07-14 (`::` precedence, looking inside an array).
 
 ### Your own helper functions: `CREATE FUNCTION`
 
