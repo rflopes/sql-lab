@@ -55,6 +55,7 @@
   - [Casting: `CAST` and `::`](#casting-cast-and-)
   - [Date and time functions](#date-and-time-functions)
   - [Conditional expressions](#conditional-expressions)
+  - [Your own helper functions: `CREATE FUNCTION`](#your-own-helper-functions-create-function)
   - [Casting text that may not be a number](#casting-text-that-may-not-be-a-number)
 
 ---
@@ -1302,6 +1303,61 @@ FROM (VALUES (300, 3), (500, 0)) AS t(total, orders);
 --    300 |      3 |           100
 --    500 |      0 |        (null)
 ```
+
+### Your own helper functions: `CREATE FUNCTION`
+
+When the same expression keeps coming back (seconds to days, cents to euros), PostgreSQL lets you give it a name with `CREATE FUNCTION`.
+
+```sql
+CREATE OR REPLACE FUNCTION interval_in(i interval, unit text)
+RETURNS numeric
+LANGUAGE sql IMMUTABLE STRICT
+RETURN EXTRACT(EPOCH FROM i) / CASE unit
+         WHEN 'minutes' THEN 60
+         WHEN 'hours'   THEN 3600
+         WHEN 'days'    THEN 86400
+       END;
+
+SELECT interval_in(interval '1 day 12 hours', 'days');    -- 1.5000000000000000
+SELECT interval_in(interval '1 day 12 hours', 'hours');   -- 36.0000000000000000
+SELECT interval_in(interval '90 seconds', 'minutes');     -- 1.5000000000000000
+```
+
+```sql
+CREATE OR REPLACE FUNCTION cents_to_eur(cents integer)
+RETURNS numeric
+LANGUAGE sql IMMUTABLE STRICT
+RETURN ROUND(cents / 100.0, 2);
+
+SELECT cents_to_eur(12950);   -- 129.50
+SELECT cents_to_eur(NULL);    -- NULL (STRICT)
+```
+
+| Part | Meaning |
+|---|---|
+| `CREATE OR REPLACE` | creates it, or replaces an existing one with the same name and argument types |
+| `(i interval, unit text)` | the arguments, with names and types |
+| `RETURNS numeric` | the type of the result |
+| `LANGUAGE sql` + `RETURN ...` | the body is one SQL expression (PostgreSQL 14+) |
+| `IMMUTABLE` | same input, always same output (no table reads, no `now()`), so PostgreSQL can optimise it |
+| `STRICT` | if any argument is `NULL`, returns `NULL` without running the body |
+
+Managing them in `psql`: `\df` lists your functions, `\df+ name` shows the body, `DROP FUNCTION cents_to_eur(integer);` removes one (the argument types are part of its identity).
+
+> ⚠️ **Warning:** **Don't use them in the exercises.** `pnpm check` runs each query on a fresh copy of the base database (`sqllab_chk_...`), where your function does not exist: `function interval_in(interval, unknown) does not exist`. A function created in `pnpm sql` lives only in `sqllab_play`, and `pnpm sql --reset` deletes it.
+
+> ⚠️ **Warning:** An unknown unit (`'weeks'`) returns `NULL` without any error, because the `CASE` has no `ELSE`. Failing loudly needs `LANGUAGE plpgsql` and `RAISE EXCEPTION`, which sql-lab does not cover.
+
+Built-in helpers that already do part of the job, nothing to create:
+
+| Function | Example | Result |
+|---|---|---|
+| `make_interval(secs => n)` | `make_interval(secs => 129600)` | `36:00:00` |
+| `make_interval(mins => n)` | `make_interval(mins => 90)` | `01:30:00` |
+| `justify_hours(interval)` | `justify_hours(interval '50 hours')` | `2 days 02:00:00` |
+| `EXTRACT(EPOCH FROM interval) / 86400` | `EXTRACT(EPOCH FROM interval '36 hours') / 86400` | `1.5` |
+
+> 📝 **Note:** Came up after 07-12 (seconds to days).
 
 ### Casting text that may not be a number
 
