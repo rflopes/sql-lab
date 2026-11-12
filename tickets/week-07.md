@@ -13,7 +13,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 07-06 | Weekday and hour of orders | QUERY | done |
 | 07-07 | Days to ship | QUERY | done |
 | 07-08 | Number inside the sku | QUERY | done |
-| 07-09 | Price bands | QUERY | todo |
+| 07-09 | Price bands | QUERY | done |
 | 07-10 | Line totals after discount | QUERY | todo |
 | 07-11 | Email providers of buyers | QUERY | todo |
 | 07-12 | Shipping speed in 2024 | QUERY | todo |
@@ -106,7 +106,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: product_id, sku, sku_number.
   - `pnpm check 07-08` is green.
 
-## 07-09: Price bands
+## 07-09: Price bands ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: CASE
