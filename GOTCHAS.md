@@ -21,6 +21,7 @@
   - [Filtering by a related table: `EXISTS` vs `JOIN` + `DISTINCT`](#filtering-by-a-related-table-exists-vs-join--distinct)
   - [`IN` vs `EXISTS`: where the link goes](#in-vs-exists-where-the-link-goes)
   - [A table that points to itself: children vs siblings](#a-table-that-points-to-itself-children-vs-siblings)
+  - [Correlated subquery in `SELECT` and `WHERE`](#correlated-subquery-in-select-and-where)
   - [`ROUND`, `CEIL` and `FLOOR`](#round-ceil-and-floor)
 - [Joins](#joins)
   - [Join types](#join-types)
@@ -388,6 +389,41 @@ WHERE f.folder_id NOT IN (SELECT parent_id FROM folders WHERE parent_id IS NOT N
 > 💡 **Tip:** Several "has no ..." conditions are several `NOT EXISTS` joined with `AND`, one per related table.
 
 > 📝 **Note:** Hit in sql-lab 08-03.
+
+### Correlated subquery in `SELECT` and `WHERE`
+
+A **correlated** subquery uses a column of the outer row, so it gives a different answer per row. It can return a single value (a scalar), which can be shown as a column or compared in the `WHERE`.
+
+Made-up table `staff(staff_id, name, team, salary)`: team red has salaries 100, 101, 101 (average 100.67); team blue has 200, 300 (average 250).
+
+Goal: staff paid above their own team's average, showing that average.
+
+```sql
+SELECT s.staff_id, s.name, s.salary,
+       (SELECT ROUND(AVG(t.salary), 2) FROM staff t WHERE t.team = s.team) AS team_avg
+FROM staff s
+WHERE s.salary > (SELECT AVG(t.salary) FROM staff t WHERE t.team = s.team);
+--  staff_id | name  | salary | team_avg
+--         2 | Bruno |    101 |   100.67
+--         3 | Carla |    101 |   100.67
+--         5 | Eva   |    300 |   250.00
+```
+
+**1. The link `t.team = s.team` is what makes it "per team".** Without it, the subquery is the average of **everyone**, the same value on every row.
+
+**2. The `WHERE` cannot use the alias `team_avg`.** The `WHERE` runs before the `SELECT`, so the alias doesn't exist yet (see [Where a column alias can be used](#where-a-column-alias-can-be-used)):
+
+```sql
+WHERE s.salary > team_avg;   -- ERROR: column "team_avg" does not exist
+```
+
+So the subquery is written twice: once to **show** the value, once to **filter** by it.
+
+**3. Round for display, compare with the exact value.** Rounding only changes what we see, but if the comparison uses the rounded value the result can change. With `ROUND(AVG(t.salary), 0)` in the `WHERE`, red's average becomes `101`, and Bruno and Carla (`101 > 101` is false) disappear.
+
+> 💡 **Tip:** A correlated subquery can't be run alone (`s.team` doesn't exist there). To check it, replace `s.team` with a fixed value (`WHERE t.team = 'red'`) and run that.
+
+> 📝 **Note:** Hit in sql-lab 08-04.
 
 ---
 
