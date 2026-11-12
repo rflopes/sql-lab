@@ -7,4 +7,8 @@
 
 -- Write your query below
 
-
+SELECT ps.product_id, p.name, ps.specs->>'season' AS season
+FROM product_specs ps
+JOIN products p ON ps.product_id = p.product_id
+WHERE ps.specs ? 'season'
+ORDER BY product_id;

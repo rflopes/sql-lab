@@ -17,7 +17,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 07-10 | Line totals after discount | QUERY | done |
 | 07-11 | Email providers of buyers | QUERY | done |
 | 07-12 | Shipping speed in 2024 | QUERY | done |
-| 07-13 | Products with a season (jsonb) | QUERY | todo |
+| 07-13 | Products with a season (jsonb) | QUERY | done |
 | 07-14 | Green products (jsonb) | QUERY | todo |
 | 08-01 | Above the average price | QUERY | todo |
 | 08-02 | Customers with a refund | QUERY | todo |
@@ -146,7 +146,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: month, avg_days_to_ship. Sorted by month.
   - `pnpm check 07-12` is green.
 
-## 07-13: Products with a season (jsonb)
+## 07-13: Products with a season (jsonb) ✅
 - Type: QUERY (optional)
 - Effort: 1 exercise (5 to 12 min)
 - Concept: jsonb: reading a key
