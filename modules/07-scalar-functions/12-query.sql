@@ -7,4 +7,8 @@
 
 -- Write your query below
 
-
+SELECT TO_CHAR(ordered_at, 'YYYY-MM') AS month, ROUND(AVG(EXTRACT(EPOCH FROM shipped_at - ordered_at) / 86_400), 1) AS avg_days_to_ship
+FROM orders
+WHERE ordered_at >= '2024-01-01 00:00:00 UTC' AND ordered_at < '2025-01-01 00:00:00 UTC' AND shipped_at IS NOT NULL
+GROUP BY month
+ORDER BY month
