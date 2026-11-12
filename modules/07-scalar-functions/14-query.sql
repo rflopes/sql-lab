@@ -6,4 +6,8 @@
 
 -- Write your query below
 
-
+SELECT ps.product_id, p.name
+FROM product_specs ps
+JOIN products p ON ps.product_id = p.product_id
+WHERE ps.specs ? 'colors' AND ps.specs['colors'] ? 'green'
+ORDER BY product_id;
