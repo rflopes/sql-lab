@@ -11,7 +11,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 07-04 | Weights and boxes | QUERY | done |
 | 07-05 | Order dates and months | QUERY | done |
 | 07-06 | Weekday and hour of orders | QUERY | done |
-| 07-07 | Days to ship | QUERY | todo |
+| 07-07 | Days to ship | QUERY | done |
 | 07-08 | Number inside the sku | QUERY | todo |
 | 07-09 | Price bands | QUERY | todo |
 | 07-10 | Line totals after discount | QUERY | todo |
@@ -86,7 +86,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: order_id, weekday, hour.
   - `pnpm check 07-06` is green.
 
-## 07-07: Days to ship
+## 07-07: Days to ship ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Intervals

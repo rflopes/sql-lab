@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT order_id, EXTRACT(DAY FROM shipped_at - ordered_at) AS days_to_ship
+FROM orders
+WHERE order_id <= 60 AND shipped_at IS NOT NULL
