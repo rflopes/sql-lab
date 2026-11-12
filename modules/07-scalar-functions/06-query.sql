@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT order_id, TO_CHAR(ordered_at, 'Dy') AS weekday, EXTRACT(HOUR FROM ordered_at) AS hour
+FROM orders
+WHERE order_id BETWEEN 100 AND 130;
