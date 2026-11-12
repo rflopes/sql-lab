@@ -13,6 +13,8 @@
   - [`NULL`](#null)
   - [`IS DISTINCT FROM`](#is-distinct-from)
 - [Querying](#querying)
+  - [Logical order of a query](#logical-order-of-a-query)
+  - [Where a column alias can be used](#where-a-column-alias-can-be-used)
   - [`BETWEEN`](#between)
   - [`IN`](#in)
   - [Subqueries need parentheses](#subqueries-need-parentheses)
@@ -143,6 +145,92 @@ When we want to filter by excluding a value, we can use `IS DISTINCT FROM`, whic
 ---
 
 ## Querying
+
+### Logical order of a query
+
+The order you **write** the clauses in is not the order they are **processed** in.
+
+| Step | Clause | What it does | Can see |
+|---|---|---|---|
+| 1 | `FROM` / `JOIN` | builds the rows from the tables | table columns |
+| 2 | `WHERE` | keeps rows (before grouping) | table columns; **no** aggregates |
+| 3 | `GROUP BY` | turns rows into groups | table columns |
+| 4 | `HAVING` | keeps groups | aggregates (`COUNT(*)`, `SUM(...)`) |
+| 5 | `SELECT` | computes the output columns, **creates the aliases** | everything above |
+| 6 | `DISTINCT` | removes duplicate output rows | output columns |
+| 7 | `ORDER BY` | sorts the output | output columns **and aliases** |
+| 8 | `LIMIT` / `OFFSET` | keeps the first rows | |
+
+Written order, which SQL requires: `SELECT → FROM → JOIN → WHERE → GROUP BY → HAVING → ORDER BY → LIMIT`.
+
+```sql
+-- made-up table sales(item, qty)
+SELECT item, SUM(qty) AS total     -- 5: alias "total" is born here
+FROM sales                          -- 1
+WHERE qty > 0                       -- 2: per row
+GROUP BY item                       -- 3
+HAVING SUM(qty) >= 200              -- 4: per group, "total" does not exist yet
+ORDER BY total DESC                 -- 7: "total" exists now
+LIMIT 10;                           -- 8
+```
+
+> ⚠️ **Warning:** An aggregate in the `WHERE` fails (`aggregate functions are not allowed in WHERE`): the groups do not exist yet at step 2. A condition on a total goes in the `HAVING`.
+
+> ⚠️ **Warning:** Clauses written out of order are a syntax error: `HAVING` before `GROUP BY` gives `syntax error at or near "GROUP"`.
+
+> 📝 **Note:** This is the **logical** order: the result is always as if it followed it. The planner may physically do things in another order to go faster.
+
+> 📝 **Note:** Hit in 06-06 (alias in `HAVING`), 06-10 (aggregate in `WHERE`) and 06-14 (`HAVING` before `GROUP BY`).
+
+### Where a column alias can be used
+
+A `SELECT` alias (`... AS name`) exists from step 5 on, so in principle only the `ORDER BY` can see it. PostgreSQL also accepts it in the `GROUP BY`, as an extension.
+
+| Clause | Alias works? | Why |
+|---|---|---|
+| `WHERE` | ❌ `column "x" does not exist` | runs before the `SELECT` |
+| `GROUP BY` | ✅ (PostgreSQL extension) | substituted **when the query is read** |
+| `HAVING` | ❌ `column "x" does not exist` | runs before the `SELECT`, no substitution |
+| `ORDER BY` | ✅ (standard) | runs after the `SELECT` |
+
+How the `GROUP BY` one works: it does **not** mean `GROUP BY` runs after `SELECT`. When PostgreSQL reads the query, for each name in the `GROUP BY` it:
+1. looks for a **table column** with that name;
+2. if there is none, looks for a **`SELECT` alias**, and copies the alias's expression into the `GROUP BY`.
+
+So `GROUP BY city_clean` becomes `GROUP BY LOWER(city)` before anything runs; grouping still happens at step 3.
+
+```sql
+SELECT LOWER(city) AS city_clean, COUNT(*) AS n
+FROM (VALUES ('Porto'), ('PORTO'), ('Braga')) AS people(city)
+GROUP BY city_clean               -- read as GROUP BY LOWER(city)
+ORDER BY city_clean;
+--  city_clean | n
+--  braga      | 1
+--  porto      | 2
+```
+
+> ⚠️ **Warning:** In the `GROUP BY`, a **table column with the same name wins** over the alias, silently:
+>
+> ```sql
+> SELECT LOWER(city) AS city, COUNT(*) AS n
+> FROM (VALUES ('Porto'), ('PORTO'), ('Braga')) AS people(city)
+> GROUP BY city;           -- groups by the ORIGINAL city: 'Porto' and 'PORTO' stay apart
+> --  braga | 1  ·  porto | 1  ·  porto | 1
+> ```
+>
+> In the `ORDER BY` it is the opposite: the **alias wins** over the table column.
+
+> ⚠️ **Warning:** In the `ORDER BY`, the alias works only **on its own**: `ORDER BY total` works, `ORDER BY total + 1` gives `column "total" does not exist`.
+
+Ways to avoid repeating a long expression:
+
+| Way | Example | Catch |
+|---|---|---|
+| Alias in `GROUP BY` | `GROUP BY city_clean` | a table column with the same name wins |
+| Position | `GROUP BY 1` (first `SELECT` column) | reordering the `SELECT` silently changes it |
+| Subquery / CTE | `SELECT city_clean, COUNT(*) FROM (SELECT LOWER(city) AS city_clean FROM people) AS p GROUP BY city_clean` | more text, but works everywhere, including `WHERE` and `HAVING` (module 08) |
+
+> 📝 **Note:** Hit in 07-11 (repeating the `NULLIF(SPLIT_PART(...))` expression).
 
 ### `BETWEEN`
 
