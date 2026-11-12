@@ -48,6 +48,10 @@
 - [Aggregates](#aggregates)
   - [Order inside `STRING_AGG`](#order-inside-string_agg)
 - [Scalar functions](#scalar-functions)
+  - [Text functions](#text-functions)
+  - [Number functions](#number-functions)
+  - [Casting: `CAST` and `::`](#casting-cast-and-)
+  - [Date and time functions](#date-and-time-functions)
   - [Casting text that may not be a number](#casting-text-that-may-not-be-a-number)
 
 ---
@@ -795,6 +799,329 @@ GROUP BY album;
 ---
 
 ## Scalar functions
+
+A scalar function works on **one value per row** and returns one value per row, so the row count does not change. An aggregate (`COUNT`, `SUM`, ...) does the opposite: it turns many rows into one per group.
+
+All examples run as they are in `pnpm sql`. `FROM (VALUES (...), (...)) AS t(col)` builds a small made-up table inline: each `(...)` is a row, and `t(col)` names the table and its columns.
+
+### Text functions
+
+#### `LOWER(t)` / `UPPER(t)`
+
+Changes the text to lower or upper case.
+
+```sql
+SELECT email, LOWER(email) AS lower_email, UPPER(email) AS upper_email
+FROM (VALUES ('Ana@Mail.COM'), ('rui@web.pt')) AS people(email);
+--  email        | lower_email  | upper_email
+--  Ana@Mail.COM | ana@mail.com | ANA@MAIL.COM
+--  rui@web.pt   | rui@web.pt   | RUI@WEB.PT
+```
+
+#### `TRIM(t)` / `LTRIM(t)` / `RTRIM(t)`
+
+Removes spaces at both ends (`TRIM`), only at the start (`LTRIM`) or only at the end (`RTRIM`). Spaces in the middle stay.
+
+```sql
+-- the brackets only show where the spaces are
+SELECT '[' || name || ']'        AS raw,
+       '[' || TRIM(name) || ']'  AS trimmed,
+       '[' || LTRIM(name) || ']' AS ltrimmed,
+       '[' || RTRIM(name) || ']' AS rtrimmed
+FROM (VALUES ('  Ana  ')) AS people(name);
+--  raw       | trimmed | ltrimmed | rtrimmed
+--  [  Ana  ] | [Ana]   | [Ana  ]  | [  Ana]
+```
+
+> 💡 **Tip:** Clean before comparing: `TRIM(LOWER(email))`. Apply the **same** expression on both sides, or in both the `SELECT` and the `WHERE`.
+
+#### `TRIM(BOTH c FROM t)`
+
+Removes another character, instead of spaces, at both ends (`LEADING` for the start only, `TRAILING` for the end only).
+
+```sql
+SELECT code, TRIM(BOTH '-' FROM code) AS cleaned
+FROM (VALUES ('--A12--'), ('B7-')) AS t(code);
+--  code    | cleaned
+--  --A12-- | A12
+--  B7-     | B7
+```
+
+#### `SPLIT_PART(t, sep, n)`
+
+Cuts `t` at every `sep` and returns the `n`-th piece (counting from 1). With a negative `n`, counts from the end (PostgreSQL 14+).
+
+```sql
+SELECT email,
+       SPLIT_PART(email, '@', 1) AS username,
+       SPLIT_PART(email, '@', 2) AS domain
+FROM (VALUES ('ana@mail.com'), ('no-at-sign')) AS people(email);
+--  email        | username   | domain
+--  ana@mail.com | ana        | mail.com
+--  no-at-sign   | no-at-sign |              <- '' (empty), not NULL
+```
+
+```sql
+SELECT path, SPLIT_PART(path, '/', -1) AS file_name
+FROM (VALUES ('docs/2024/report.pdf'), ('notes.txt')) AS t(path);
+--  path                 | file_name
+--  docs/2024/report.pdf | report.pdf
+--  notes.txt            | notes.txt
+```
+
+> ⚠️ **Warning:** `SPLIT_PART` returns `''`, not `NULL`, when the piece does not exist. `IS NULL` will not find it; use `NULLIF(..., '')` to turn it into `NULL`.
+
+#### `CONCAT_WS(sep, a, b, ...)`
+
+Joins the values with a separator ("with separator"), **skipping `NULL`s**, so there are no stray separators. If every value is `NULL`, returns `''` (never `NULL`).
+
+```sql
+SELECT city, phone, CONCAT_WS(' / ', city, phone) AS contact
+FROM (VALUES ('Porto', '912000000'), ('Braga', NULL), (NULL, '934000000'), (NULL, NULL)) AS people(city, phone);
+--  city   | phone     | contact
+--  Porto  | 912000000 | Porto / 912000000
+--  Braga  | (null)    | Braga
+--  (null) | 934000000 | 934000000
+--  (null) | (null)    |                    <- ''
+```
+
+#### `CONCAT(a, b, ...)`
+
+Joins the values, treating `NULL` as `''`. Any separators you typed stay, even next to a missing value.
+
+```sql
+SELECT first_name, middle_name, last_name,
+       CONCAT(first_name, ' ', middle_name, ' ', last_name) AS full_name
+FROM (VALUES ('Ana', 'Sofia', 'Lima'), ('Rui', NULL, 'Costa')) AS people(first_name, middle_name, last_name);
+--  first_name | middle_name | last_name | full_name
+--  Ana        | Sofia       | Lima      | Ana Sofia Lima
+--  Rui        | (null)      | Costa     | Rui  Costa       <- two spaces
+```
+
+#### `a || b`
+
+The concatenation operator. **One `NULL` makes the whole result `NULL`.**
+
+```sql
+SELECT city, phone, city || ' / ' || phone AS contact
+FROM (VALUES ('Porto', '912000000'), ('Braga', NULL)) AS people(city, phone);
+--  city  | phone     | contact
+--  Porto | 912000000 | Porto / 912000000
+--  Braga | (null)    | (null)
+```
+
+### Number functions
+
+See also [`ROUND`, `CEIL` and `FLOOR`](#round-ceil-and-floor) for halves and negatives.
+
+#### `ROUND(x)` / `ROUND(x, n)`
+
+Rounds to the nearest whole number, or to `n` decimals (`numeric` only). Halves round away from zero.
+
+```sql
+SELECT price,
+       ROUND(price)    AS whole,
+       ROUND(price, 1) AS one_decimal,
+       ROUND(price, 2) AS two_decimals
+FROM (VALUES (12.345), (7.5), (-2.5)) AS t(price);
+--  price  | whole | one_decimal | two_decimals
+--  12.345 |    12 |        12.3 |        12.35
+--     7.5 |     8 |         7.5 |         7.50
+--    -2.5 |    -3 |        -2.5 |        -2.50
+```
+
+#### `CEIL(x)` / `FLOOR(x)`
+
+`CEIL` always rounds **up** to a whole number, `FLOOR` always **down**.
+
+```sql
+-- boxes of 2.5 kg
+SELECT kg,
+       CEIL(kg / 2.5)  AS boxes,       -- a partial box is still a box
+       FLOOR(kg / 2.5) AS full_boxes   -- only boxes that are completely full
+FROM (VALUES (2.5), (6.0), (0.3)) AS t(kg);
+--  kg  | boxes | full_boxes
+--  2.5 |     1 |          1
+--  6.0 |     3 |          2
+--  0.3 |     1 |          0
+```
+
+#### Integer division `/`
+
+Integer ÷ integer is an integer, and the decimals are **cut off**, not rounded: `7 / 2` is `3`. Make one side non-integer (`100.0`, or a cast) to keep them.
+
+```sql
+-- cents to euros
+SELECT cents,
+       cents / 100             AS wrong_eur,
+       ROUND(cents / 100.0, 2) AS eur
+FROM (VALUES (12950), (99)) AS t(cents);
+--  cents | wrong_eur | eur
+--  12950 |       129 | 129.50
+--     99 |         0 |   0.99
+```
+
+### Casting: `CAST` and `::`
+
+#### `CAST(x AS type)` / `x::type`
+
+Changes a value's type. The two forms are equivalent: `CAST` is standard SQL, `::` is PostgreSQL shorthand.
+
+```sql
+SELECT code, CAST(code AS integer) AS as_int, code::integer AS same_thing
+FROM (VALUES ('0012'), ('450')) AS t(code);
+--  code | as_int | same_thing
+--  0012 |     12 |         12
+--  450  |    450 |        450
+```
+
+> ⚠️ **Warning:** A cast that cannot work fails the **whole query**, see [Casting text that may not be a number](#casting-text-that-may-not-be-a-number).
+
+### Date and time functions
+
+> 📝 **Note:** On `timestamptz` columns, `::date`, `DATE_TRUNC`, `EXTRACT` and `TO_CHAR` depend on the session time zone. `pnpm sql` and the checker use UTC.
+
+#### `ts::date`
+
+Keeps the calendar date and drops the time.
+
+```sql
+SELECT ordered_at, ordered_at::date AS order_date
+FROM (VALUES (timestamp '2024-03-15 14:30'), (timestamp '2024-03-15 23:59:59')) AS t(ordered_at);
+--  ordered_at          | order_date
+--  2024-03-15 14:30:00 | 2024-03-15
+--  2024-03-15 23:59:59 | 2024-03-15
+```
+
+#### `DATE_TRUNC(unit, ts)`
+
+Cuts the timestamp down to the start of the unit (`'year'`, `'month'`, `'day'`, `'hour'`, ...). The result is **still a timestamp**; add `::date` if you need a date.
+
+```sql
+SELECT ordered_at,
+       DATE_TRUNC('month', ordered_at)       AS month_ts,
+       DATE_TRUNC('month', ordered_at)::date AS month_date,
+       DATE_TRUNC('hour', ordered_at)        AS hour_ts
+FROM (VALUES (timestamp '2024-03-15 14:30')) AS t(ordered_at);
+--  ordered_at          | month_ts            | month_date | hour_ts
+--  2024-03-15 14:30:00 | 2024-03-01 00:00:00 | 2024-03-01 | 2024-03-15 14:00:00
+```
+
+#### `EXTRACT(field FROM ts)`
+
+Returns one field of the date as a number: `YEAR`, `MONTH`, `DAY` (of the month), `HOUR`, `MINUTE`, `DOW` (weekday, **0 = Sunday**), `ISODOW` (weekday, **1 = Monday, 7 = Sunday**).
+
+```sql
+-- 2024-03-15 is a Friday, 2024-03-17 a Sunday
+SELECT ordered_at,
+       EXTRACT(YEAR FROM ordered_at)   AS year,
+       EXTRACT(MONTH FROM ordered_at)  AS month,
+       EXTRACT(HOUR FROM ordered_at)   AS hour,
+       EXTRACT(DOW FROM ordered_at)    AS dow,
+       EXTRACT(ISODOW FROM ordered_at) AS isodow
+FROM (VALUES (timestamp '2024-03-15 14:30'), (timestamp '2024-03-17 09:05')) AS t(ordered_at);
+--  ordered_at          | year | month | hour | dow | isodow
+--  2024-03-15 14:30:00 | 2024 |     3 |   14 |   5 |      5
+--  2024-03-17 09:05:00 | 2024 |     3 |    9 |   0 |      7
+```
+
+#### `DATE_PART('field', ts)`
+
+The same as `EXTRACT`, written as a function with the field as text. `'day'` is the day **of the month**, not the date.
+
+```sql
+SELECT ordered_at,
+       DATE_PART('day', ordered_at)    AS day_of_month,
+       DATE_PART('minute', ordered_at) AS minute
+FROM (VALUES (timestamp '2024-03-15 14:30')) AS t(ordered_at);
+--  ordered_at          | day_of_month | minute
+--  2024-03-15 14:30:00 |           15 |     30
+```
+
+#### `TO_CHAR(ts, pattern)`
+
+Formats a date as **text**, following a pattern. The case of the pattern matters.
+
+| Pattern | Result for 2024-03-15 14:30 |
+|---|---|
+| `'Dy'` | `'Fri'` |
+| `'DY'` | `'FRI'` |
+| `'Day'` | `'Friday   '` (padded to 9 characters) |
+| `'FMDay'` | `'Friday'` (`FM` removes the padding) |
+| `'D'` | `'6'` (1 = Sunday; not the same as `DOW`) |
+| `'YYYY-MM'` | `'2024-03'` |
+| `'HH24'` | `'14'` |
+
+```sql
+SELECT ordered_at,
+       TO_CHAR(ordered_at, 'Dy')                 AS weekday,
+       TO_CHAR(ordered_at, 'FMDay')              AS weekday_full,
+       TO_CHAR(ordered_at, 'YYYY-MM')            AS month,
+       TO_CHAR(ordered_at, 'DD/MM/YYYY HH24:MI') AS pt_format
+FROM (VALUES (timestamp '2024-03-15 14:30')) AS t(ordered_at);
+--  ordered_at          | weekday | weekday_full | month   | pt_format
+--  2024-03-15 14:30:00 | Fri     | Friday       | 2024-03 | 15/03/2024 14:30
+```
+
+> ⚠️ **Warning:** Weekday numbering differs: `EXTRACT(DOW)` is 0–6 from Sunday, `TO_CHAR(..., 'D')` is 1–7 from Sunday, `EXTRACT(ISODOW)` is 1–7 from Monday.
+
+#### `ts - ts`
+
+Subtracting two timestamps gives an **interval in days + time**, with no months. `EXTRACT(DAY FROM ...)` on it gives the number of complete 24-hour periods.
+
+```sql
+SELECT ordered_at, shipped_at,
+       shipped_at - ordered_at                   AS waited,
+       EXTRACT(DAY FROM shipped_at - ordered_at) AS full_days
+FROM (VALUES (timestamp '2024-02-01 09:00', timestamp '2024-02-02 08:00'),
+             (timestamp '2024-02-01 09:00', timestamp '2024-03-05 10:00')) AS t(ordered_at, shipped_at);
+--  ordered_at          | shipped_at          | waited           | full_days
+--  2024-02-01 09:00:00 | 2024-02-02 08:00:00 | 23:00:00         |         0
+--  2024-02-01 09:00:00 | 2024-03-05 10:00:00 | 33 days 01:00:00 |        33
+```
+
+#### `AGE(ts, ts)`
+
+The difference as an **interval in years + months + days**, the way people say ages. Good for "how old", bad for "how many days".
+
+```sql
+SELECT born,
+       AGE(timestamp '2024-03-15', born)                    AS age,
+       EXTRACT(YEAR FROM AGE(timestamp '2024-03-15', born)) AS years
+FROM (VALUES (timestamp '1990-07-20'), (timestamp '2000-03-15')) AS t(born);
+--  born                | age                     | years
+--  1990-07-20 00:00:00 | 33 years 7 mons 26 days |    33
+--  2000-03-15 00:00:00 | 24 years                |    24
+```
+
+> ⚠️ **Warning:** `EXTRACT(DAY FROM AGE(...))` only reads the **days part** of "1 mon 4 days", so it ignores the month: `EXTRACT(DAY FROM AGE(timestamp '2024-03-05 10:00', timestamp '2024-02-01 09:00'))` is `4`, not `33`. For "how many days", use `ts - ts`.
+
+#### `date - date`
+
+Subtracting two `date`s gives a plain **integer** number of days (not an interval).
+
+```sql
+SELECT start_day, end_day, end_day - start_day AS days
+FROM (VALUES (date '2024-02-01', date '2024-03-05'), (date '2024-12-31', date '2025-01-01')) AS t(start_day, end_day);
+--  start_day  | end_day    | days
+--  2024-02-01 | 2024-03-05 |   33
+--  2024-12-31 | 2025-01-01 |    1
+```
+
+#### `EXTRACT(EPOCH FROM interval)`
+
+The total length of an interval in **seconds**. Divide to convert to hours, days, ...
+
+```sql
+SELECT waited,
+       EXTRACT(EPOCH FROM waited)               AS seconds,
+       FLOOR(EXTRACT(EPOCH FROM waited) / 3600) AS full_hours
+FROM (VALUES (interval '1 day 2 hours 30 minutes')) AS t(waited);
+--  waited         | seconds      | full_hours
+--  1 day 02:30:00 | 95400.000000 |         26
+```
+
+> 📝 **Note:** Hit in 07-01 to 07-08.
 
 ### Casting text that may not be a number
 
