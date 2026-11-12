@@ -5,7 +5,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 
 | Ticket | Title | Type | Status |
 | --- | --- | --- | --- |
-| 08-03 | Empty leaf categories | QUERY | todo |
+| 08-03 | Empty leaf categories | QUERY | done |
 | 08-04 | Above their own category average | QUERY | todo |
 | 08-05 | Customers who paid by transfer | QUERY | todo |
 | 08-06 | Average orders per customer | QUERY | todo |
@@ -24,7 +24,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
 
 ---
 
-## 08-03: Empty leaf categories
+## 08-03: Empty leaf categories ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: NOT EXISTS
