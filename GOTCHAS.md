@@ -19,6 +19,7 @@
   - [`IN`](#in)
   - [Subqueries need parentheses](#subqueries-need-parentheses)
   - [Filtering by a related table: `EXISTS` vs `JOIN` + `DISTINCT`](#filtering-by-a-related-table-exists-vs-join--distinct)
+  - [`IN` vs `EXISTS`: where the link goes](#in-vs-exists-where-the-link-goes)
   - [`ROUND`, `CEIL` and `FLOOR`](#round-ceil-and-floor)
 - [Joins](#joins)
   - [Join types](#join-types)
@@ -294,6 +295,49 @@ WHERE EXISTS (
 > ⚠️ **Warning:** Without the link (`o.customer_id = c.id`), the subquery asks "is there such an order **anywhere**?" and the answer is the same for every row.
 
 > 💡 **Tip:** Use a `JOIN` when you need columns from the other table. Use `EXISTS` when you only need to **filter** by it. `c.id IN (SELECT customer_id FROM orders WHERE total > 100)` also works without duplicates.
+
+### `IN` vs `EXISTS`: where the link goes
+
+Both filter by a related table without duplicates, but the subquery works differently.
+
+Made-up tables: `authors(author_id, name)` and `books(book_id, author_id, genre)`. Goal: authors with at least one horror book.
+
+**`IN`: the subquery stands alone.** It runs **once** and returns a list. The outer query then asks, for each author, "is my id in this list?". Repeated ids in the list don't matter.
+
+```sql
+SELECT b.author_id FROM books b WHERE b.genre = 'horror';
+-- 3, 7, 7, 12
+
+SELECT a.author_id, a.name
+FROM authors a
+WHERE a.author_id IN (SELECT b.author_id FROM books b WHERE b.genre = 'horror');
+-- same as: WHERE a.author_id IN (3, 7, 7, 12)
+```
+
+**`EXISTS`: the subquery needs the outer row.** It asks "is there a horror book by **this** author?", so it needs the link `b.author_id = a.author_id` to know who "this author" is. It is a **correlated** subquery: conceptually it runs once per author.
+
+```sql
+SELECT a.author_id, a.name
+FROM authors a
+WHERE EXISTS (
+  SELECT 1 FROM books b
+  WHERE b.author_id = a.author_id   -- the link
+    AND b.genre = 'horror'
+);
+```
+
+| | The comparison with the outer row is made by | Can the subquery run alone? |
+|---|---|---|
+| `IN` | the `IN` itself (`a.author_id IN ...`) | yes |
+| `EXISTS` | the link inside the subquery | no: `a.author_id` doesn't exist there |
+
+> ⚠️ **Warning:** Don't copy the `EXISTS` link into an `IN` subquery (`... IN (SELECT b.author_id FROM books b WHERE b.author_id = a.author_id AND ...)`). The result is still right, but the link is redundant: the `IN` already compares the ids. And it turns a standalone list into a correlated subquery that can no longer be run alone to check it.
+
+> 💡 **Tip:** To check an `IN` subquery, copy it and run it on its own: you should see the list it produces.
+
+> 📝 **Note:** For `NOT IN` vs `NOT EXISTS`, see ["Never": four ways to write it](#never-four-ways-to-write-it): a single `NULL` in the list empties `NOT IN`.
+
+> 📝 **Note:** Hit in sql-lab 08-02.
 
 ---
 
