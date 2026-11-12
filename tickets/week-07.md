@@ -19,7 +19,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 07-12 | Shipping speed in 2024 | QUERY | done |
 | 07-13 | Products with a season (jsonb) | QUERY | done |
 | 07-14 | Green products (jsonb) | QUERY | done |
-| 08-01 | Above the average price | QUERY | todo |
+| 08-01 | Above the average price | QUERY | done |
 | 08-02 | Customers with a refund | QUERY | todo |
 
 Tables: categories, suppliers, products, customers, employees, orders, order_items, payments, reviews, product_specs (jsonb, optional exercises). Explore with `pnpm sql` (`\dt`, `\d table`). Money is in integer cents. "Today" is never `now()`: statements fix their own dates.
@@ -166,7 +166,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: product_id, name. Sorted by product_id.
   - `pnpm check 07-14` is green.
 
-## 08-01: Above the average price
+## 08-01: Above the average price ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Scalar subquery
