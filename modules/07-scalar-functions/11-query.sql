@@ -7,4 +7,8 @@
 
 -- Write your query below
 
-
+SELECT NULLIF(SPLIT_PART(TRIM(LOWER(c.email)), '@', 2), '') AS domain, COUNT(DISTINCT c.customer_id) AS customers
+FROM orders o
+JOIN customers c ON c.customer_id = o.customer_id
+GROUP BY NULLIF(SPLIT_PART(TRIM(LOWER(c.email)), '@', 2), '')
+ORDER BY customers DESC, domain
