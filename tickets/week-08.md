@@ -7,7 +7,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | --- | --- | --- | --- |
 | 08-03 | Empty leaf categories | QUERY | done |
 | 08-04 | Above their own category average | QUERY | done |
-| 08-05 | Customers who paid by transfer | QUERY | todo |
+| 08-05 | Customers who paid by transfer | QUERY | done |
 | 08-06 | Average orders per customer | QUERY | todo |
 | 08-07 | Top five spenders | QUERY | todo |
 | 08-08 | Busy months of 2025 | QUERY | todo |
@@ -44,7 +44,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: product_id, name, unit_price_cents, category_avg_cents.
   - `pnpm check 08-04` is green.
 
-## 08-05: Customers who paid by transfer
+## 08-05: Customers who paid by transfer ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: EXISTS
