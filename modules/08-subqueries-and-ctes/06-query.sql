@@ -6,4 +6,9 @@
 
 -- Write your query below
 
-
+SELECT ROUND(AVG(orders_count), 2) AS avg_orders_per_customer
+FROM (
+  SELECT o.customer_id, COUNT(*) AS orders_count
+  FROM orders o
+  GROUP BY o.customer_id
+) AS orders_by_customer
