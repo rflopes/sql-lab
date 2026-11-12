@@ -20,7 +20,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 07-13 | Products with a season (jsonb) | QUERY | done |
 | 07-14 | Green products (jsonb) | QUERY | done |
 | 08-01 | Above the average price | QUERY | done |
-| 08-02 | Customers with a refund | QUERY | todo |
+| 08-02 | Customers with a refund | QUERY | done |
 
 Tables: categories, suppliers, products, customers, employees, orders, order_items, payments, reviews, product_specs (jsonb, optional exercises). Explore with `pnpm sql` (`\dt`, `\d table`). Money is in integer cents. "Today" is never `now()`: statements fix their own dates.
 
@@ -176,7 +176,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: product_id, name, unit_price_cents.
   - `pnpm check 08-01` is green.
 
-## 08-02: Customers with a refund
+## 08-02: Customers with a refund ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: IN with a subquery

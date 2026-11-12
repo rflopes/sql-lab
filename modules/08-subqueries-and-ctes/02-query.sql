@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT c.customer_id, c.email
+FROM customers c
+WHERE EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.customer_id AND o.status = 'refunded')
