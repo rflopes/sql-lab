@@ -14,7 +14,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 08-09 | Category paths | QUERY | done |
 | 08-10 | Everyone under the VP | QUERY | done |
 | 08-11 | Nobody is left in the list | DEBUG | done |
-| 08-12 | Error on the price comparison | DEBUG | todo |
+| 08-12 | Error on the price comparison | DEBUG | done |
 | 08-13 | Bad first impressions | QUERY | todo |
 | 08-14 | Revenue per top-level category | QUERY | todo |
 | 09-01 | Number the categories | QUERY | todo |
@@ -116,7 +116,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: customer_id, email.
   - `pnpm check 08-11` is green.
 
-## 08-12: Error on the price comparison
+## 08-12: Error on the price comparison ✅
 - Type: DEBUG
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Subquery returning several rows

@@ -8,4 +8,4 @@
 -- The query below is broken. Fix it.
 SELECT product_id, name, unit_price_cents
 FROM products
-WHERE unit_price_cents >= (SELECT unit_price_cents FROM products WHERE category_id = 18);
+WHERE unit_price_cents >= (SELECT MAX(unit_price_cents) FROM products WHERE category_id = 18);
