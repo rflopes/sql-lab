@@ -12,7 +12,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 08-07 | Top five spenders | QUERY | done |
 | 08-08 | Busy months of 2025 | QUERY | done |
 | 08-09 | Category paths | QUERY | done |
-| 08-10 | Everyone under the VP | QUERY | todo |
+| 08-10 | Everyone under the VP | QUERY | done |
 | 08-11 | Nobody is left in the list | DEBUG | todo |
 | 08-12 | Error on the price comparison | DEBUG | todo |
 | 08-13 | Bad first impressions | QUERY | todo |
@@ -95,7 +95,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: category_id, path. A top-level category's path is just its name.
   - `pnpm check 08-09` is green.
 
-## 08-10: Everyone under the VP
+## 08-10: Everyone under the VP ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Recursive CTE: hierarchy

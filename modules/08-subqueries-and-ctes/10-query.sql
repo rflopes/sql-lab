@@ -6,4 +6,10 @@
 
 -- Write your query below
 
-
+WITH RECURSIVE employee_reporters AS (
+  SELECT e.employee_id, 1 AS level FROM employees e WHERE e.manager_id = 3
+  UNION ALL
+  SELECT e.employee_id, er.level + 1 AS level
+  FROM employees e JOIN employee_reporters er ON e.manager_id = er.employee_id
+)
+SELECT * FROM employee_reporters;
