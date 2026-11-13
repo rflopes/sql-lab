@@ -8,4 +8,8 @@
 -- The query below is broken. Fix it.
 SELECT customer_id, email
 FROM customers
-WHERE customer_id NOT IN (SELECT referred_by FROM customers);
+WHERE customer_id NOT IN (SELECT referred_by FROM customers WHERE referred_by IS NOT NULL);
+
+-- SELECT c.customer_id, c.email
+-- FROM customers c
+-- WHERE NOT EXISTS (SELECT 1 FROM customers sub WHERE sub.referred_by = c.customer_id);
