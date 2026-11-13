@@ -6,4 +6,10 @@
 
 -- Write your query below
 
-
+WITH RECURSIVE category_path AS (
+  SELECT category_id, name AS path FROM categories WHERE parent_id IS NULL
+  UNION ALL
+  SELECT c.category_id, concat_ws(' > ', p.path, c.name)
+  FROM categories c JOIN category_path p ON c.parent_id = p.category_id
+)
+SELECT * FROM category_path;
