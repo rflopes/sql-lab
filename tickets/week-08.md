@@ -15,7 +15,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 08-10 | Everyone under the VP | QUERY | done |
 | 08-11 | Nobody is left in the list | DEBUG | done |
 | 08-12 | Error on the price comparison | DEBUG | done |
-| 08-13 | Bad first impressions | QUERY | todo |
+| 08-13 | Bad first impressions | QUERY | done |
 | 08-14 | Revenue per top-level category | QUERY | todo |
 | 09-01 | Number the categories | QUERY | todo |
 | 09-02 | Number each customer's orders | QUERY | todo |
@@ -127,7 +127,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: product_id, name, unit_price_cents.
   - `pnpm check 08-12` is green.
 
-## 08-13: Bad first impressions
+## 08-13: Bad first impressions ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: (not given)
