@@ -7,3 +7,5 @@
 -- Write your query below
 
 
+SELECT category_id, name, ROW_NUMBER() OVER (ORDER BY name) AS row_num
+FROM categories
