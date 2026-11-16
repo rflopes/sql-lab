@@ -6,4 +6,14 @@
 
 -- Write your query below
 
-
+WITH monthly_orders AS (
+  SELECT date_trunc('month', o.ordered_at, 'UTC')::date AS month, SUM(oi.unit_price_cents * oi.quantity) AS revenue_cents
+  FROM orders o
+  JOIN order_items oi ON o.order_id = oi.order_id
+  WHERE o.status != 'cancelled'
+  GROUP BY 1
+  ORDER BY month
+)
+SELECT month, revenue_cents,
+  SUM(revenue_cents) OVER (ORDER BY month) as running_cents
+FROM monthly_orders
