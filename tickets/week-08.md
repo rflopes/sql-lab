@@ -18,7 +18,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 08-13 | Bad first impressions | QUERY | done |
 | 08-14 | Revenue per top-level category | QUERY | done |
 | 09-01 | Number the categories | QUERY | done |
-| 09-02 | Number each customer's orders | QUERY | todo |
+| 09-02 | Number each customer's orders | QUERY | done |
 
 Tables: categories, suppliers, products, customers, employees, orders, order_items, payments, reviews. Explore with `pnpm sql` (`\dt`, `\d table`). Money is in integer cents. "Today" is never `now()`: statements fix their own dates.
 
@@ -157,7 +157,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: category_id, name, row_num.
   - `pnpm check 09-01` is green.
 
-## 09-02: Number each customer's orders
+## 09-02: Number each customer's orders ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: PARTITION BY

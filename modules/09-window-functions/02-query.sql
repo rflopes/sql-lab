@@ -6,4 +6,5 @@
 
 -- Write your query below
 
-
+SELECT order_id, customer_id, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY ordered_at, order_id) AS order_number
+FROM orders
