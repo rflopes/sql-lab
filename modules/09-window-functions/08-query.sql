@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT order_item_id, order_id, unit_price_cents * quantity AS line_cents, SUM(unit_price_cents * quantity) OVER (PARTITION BY order_id) AS order_cents
+FROM order_items
+WHERE order_id <= 20
