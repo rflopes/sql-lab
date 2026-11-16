@@ -11,7 +11,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 09-06 | Next price up | QUERY | done |
 | 09-07 | Revenue so far | QUERY | done |
 | 09-08 | Line and order totals together | QUERY | done |
-| 09-09 | Three-month average | QUERY | todo |
+| 09-09 | Three-month average | QUERY | done |
 | 09-10 | Cheapest in the category | QUERY | todo |
 | 09-11 | Order totals keep growing | DEBUG | todo |
 | 09-12 | Tied cheapest products go missing | DEBUG | todo |
@@ -82,7 +82,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: order_item_id, order_id, line_cents, order_cents.
   - `pnpm check 09-08` is green.
 
-## 09-09: Three-month average
+## 09-09: Three-month average ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Frames: ROWS
