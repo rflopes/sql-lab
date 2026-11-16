@@ -6,4 +6,7 @@
 
 -- Write your query below
 
-
+SELECT product_id, category_id, unit_price_cents,
+  RANK() OVER (PARTITION BY category_id ORDER BY unit_price_cents DESC) AS rnk,
+  DENSE_RANK() OVER (PARTITION BY category_id ORDER BY unit_price_cents DESC) AS dense_rnk
+FROM products

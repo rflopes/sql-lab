@@ -5,7 +5,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 
 | Ticket | Title | Type | Status |
 | --- | --- | --- | --- |
-| 09-03 | Price ranks inside categories | QUERY | todo |
+| 09-03 | Price ranks inside categories | QUERY | done |
 | 09-04 | Latest order per customer | QUERY | todo |
 | 09-05 | Gap between orders | QUERY | todo |
 | 09-06 | Next price up | QUERY | todo |
@@ -22,7 +22,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
 
 ---
 
-## 09-03: Price ranks inside categories
+## 09-03: Price ranks inside categories ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: RANK and DENSE_RANK
