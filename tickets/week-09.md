@@ -6,7 +6,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | Ticket | Title | Type | Status |
 | --- | --- | --- | --- |
 | 09-03 | Price ranks inside categories | QUERY | done |
-| 09-04 | Latest order per customer | QUERY | todo |
+| 09-04 | Latest order per customer | QUERY | done |
 | 09-05 | Gap between orders | QUERY | todo |
 | 09-06 | Next price up | QUERY | todo |
 | 09-07 | Revenue so far | QUERY | todo |
@@ -32,7 +32,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: product_id, category_id, unit_price_cents, rnk, dense_rnk.
   - `pnpm check 09-03` is green.
 
-## 09-04: Latest order per customer
+## 09-04: Latest order per customer ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Top row per group

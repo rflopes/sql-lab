@@ -6,4 +6,10 @@
 
 -- Write your query below
 
-
+WITH sorted_orders_by_customer AS (
+  SELECT customer_id, order_id, ordered_at, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY ordered_at DESC, order_id DESC) AS rn
+  FROM orders
+)
+SELECT customer_id, order_id, ordered_at
+FROM sorted_orders_by_customer
+WHERE rn = 1
