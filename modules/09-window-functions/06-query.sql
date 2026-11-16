@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT product_id, category_id, unit_price_cents,
+  LEAD(unit_price_cents) OVER (PARTITION BY category_id ORDER BY unit_price_cents, product_id) AS next_price_cents
+FROM products;

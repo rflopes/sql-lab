@@ -8,7 +8,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 09-03 | Price ranks inside categories | QUERY | done |
 | 09-04 | Latest order per customer | QUERY | done |
 | 09-05 | Gap between orders | QUERY | done |
-| 09-06 | Next price up | QUERY | todo |
+| 09-06 | Next price up | QUERY | done |
 | 09-07 | Revenue so far | QUERY | todo |
 | 09-08 | Line and order totals together | QUERY | todo |
 | 09-09 | Three-month average | QUERY | todo |
@@ -52,7 +52,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: order_id, customer_id, ordered_at, days_since_prev.
   - `pnpm check 09-05` is green.
 
-## 09-06: Next price up
+## 09-06: Next price up ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: LEAD
