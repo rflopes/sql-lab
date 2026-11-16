@@ -6,4 +6,6 @@
 
 -- Write your query below
 
-
+SELECT order_id, customer_id, ordered_at,
+  EXTRACT(DAY FROM ordered_at - (LAG(ordered_at) OVER (PARTITION BY customer_id ORDER BY ordered_at, order_id))) AS days_since_prev
+FROM orders
