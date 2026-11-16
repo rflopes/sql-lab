@@ -61,6 +61,14 @@
   - [`jsonb`](#jsonb)
   - [Your own helper functions: `CREATE FUNCTION`](#your-own-helper-functions-create-function)
   - [Casting text that may not be a number](#casting-text-that-may-not-be-a-number)
+- [Window functions](#window-functions)
+  - [`OVER`: a value per row, without merging rows](#over-a-value-per-row-without-merging-rows)
+  - [`ROW_NUMBER`, `RANK` and `DENSE_RANK`](#row_number-rank-and-dense_rank)
+  - [Filtering on a window function: top row per group](#filtering-on-a-window-function-top-row-per-group)
+  - [`LAG` and `LEAD`](#lag-and-lead)
+  - [Running totals and the default frame](#running-totals-and-the-default-frame)
+  - [A window over an aggregate](#a-window-over-an-aggregate)
+  - [Moving average and months with no sales](#moving-average-and-months-with-no-sales)
 
 ---
 
@@ -1656,3 +1664,233 @@ Ways around it (made-up table `codes(code)`, values like `'ABC-0012'`):
 > 💡 **Tip:** Prefer turning bad values into `NULL` and counting them over letting the query fail: bad data should show up in a report, not stop it.
 
 > 📝 **Note:** Hit in 07-02 (`SPLIT_PART` gives `''`) and 07-08 (sku number).
+
+---
+
+## Window functions
+
+Made-up table used below, `sales(seller, region, amount)`:
+
+| seller | region | amount |
+|---|---|---|
+| Ana | North | 100 |
+| Bruno | North | 300 |
+| Carla | South | 200 |
+| Duarte | South | 200 |
+| Eva | South | 50 |
+
+### `OVER`: a value per row, without merging rows
+
+`GROUP BY` **merges** rows into one per group. A window function **keeps every row** and adds a value computed over related rows (the "window"). `OVER (...)` is what turns an aggregate into a window function.
+
+```sql
+SELECT region, SUM(amount) FROM sales GROUP BY region;
+-- 2 rows: North 400, South 450
+
+SELECT seller, region, amount,
+       SUM(amount) OVER (PARTITION BY region) AS region_total
+FROM sales;
+-- 5 rows, each with its region's total next to it (400 or 450)
+```
+
+| Inside `OVER` | Effect |
+|---|---|
+| nothing: `OVER ()` | one window: the whole result |
+| `PARTITION BY x` | one window per value of `x`; numbering and sums **restart** in each |
+| `ORDER BY y` | the order inside the window; needed for numbering, `LAG`/`LEAD` and running totals |
+
+> 💡 **Tip:** Without `ORDER BY`, an aggregate covers the **whole partition**: that's how to put the order total next to each order line (09-08).
+
+---
+
+### `ROW_NUMBER`, `RANK` and `DENSE_RANK`
+
+```sql
+SELECT seller, region, amount,
+       ROW_NUMBER() OVER (PARTITION BY region ORDER BY amount DESC) AS rn,
+       RANK()       OVER (PARTITION BY region ORDER BY amount DESC) AS rnk,
+       DENSE_RANK() OVER (PARTITION BY region ORDER BY amount DESC) AS drnk
+FROM sales;
+```
+
+| seller | region | amount | rn | rnk | drnk |
+|---|---|---|---|---|---|
+| Bruno | North | 300 | 1 | 1 | 1 |
+| Ana | North | 100 | 2 | 2 | 2 |
+| Carla | South | 200 | 1 | 1 | 1 |
+| Duarte | South | 200 | 2 | 1 | 1 |
+| Eva | South | 50 | 3 | **3** | **2** |
+
+- `ROW_NUMBER`: always 1, 2, 3, even on ties.
+- `RANK`: ties share a position, then **skip** (1, 1, 3).
+- `DENSE_RANK`: ties share a position, **no skip** (1, 1, 2).
+
+> ⚠️ **Warning:** On a tie, `ROW_NUMBER` picks the order **arbitrarily** (Carla and Duarte could swap). Add a tie-breaker to the `ORDER BY` (`amount DESC, seller_id`) so the result is the same every run.
+
+> 📝 **Note:** Without `PARTITION BY` there is one numbering for the whole table: Eva would be `rn = 5`.
+
+---
+
+### Filtering on a window function: top row per group
+
+Window functions run **after** `WHERE` (and after `GROUP BY`/`HAVING`), so they can't be filtered in the same query:
+
+```sql
+SELECT seller, ROW_NUMBER() OVER (ORDER BY amount DESC) AS rn
+FROM sales
+WHERE ROW_NUMBER() OVER (ORDER BY amount DESC) = 1;
+-- ERROR: window functions are not allowed in WHERE
+```
+
+Compute it in a CTE (or a subquery in `FROM`) and filter outside. Top seller per region:
+
+```sql
+WITH ranked AS (
+  SELECT seller, region, amount,
+         ROW_NUMBER() OVER (PARTITION BY region ORDER BY amount DESC, seller) AS rn
+  FROM sales
+)
+SELECT seller, region, amount
+FROM ranked
+WHERE rn = 1;
+-- Bruno (North), Carla (South)
+```
+
+> ⚠️ **Warning:** Give the window column an alias (`AS rn`). Without one, Postgres names it after the function (`row_number`); `WHERE row_number = 1` works, but breaks as soon as you switch to `RANK`.
+
+> 💡 **Tip:** "Most recent" is `ORDER BY ... DESC`, and the tie-breaker goes in the same direction the task asks for: "the higher id counts as the most recent" is `ORDER BY ordered_at DESC, order_id DESC` (09-04).
+
+> 📝 **Note:** Other ways to get the top row per group, without window functions: `DISTINCT ON` and a correlated subquery with `ORDER BY ... LIMIT 1` (08-13).
+
+---
+
+### `LAG` and `LEAD`
+
+`LAG(col)` takes `col` from the **previous** row of the window, `LEAD(col)` from the **next** one. At the edge there is no row, so the result is `NULL`.
+
+```sql
+SELECT seller, region, amount,
+       LAG(amount)  OVER (PARTITION BY region ORDER BY amount DESC, seller) AS prev_amount,
+       LEAD(amount) OVER (PARTITION BY region ORDER BY amount DESC, seller) AS next_amount
+FROM sales;
+--  Bruno  | North | 300 |      |  100
+--  Ana    | North | 100 |  300 |
+--  Carla  | South | 200 |      |  200
+--  Duarte | South | 200 |  200 |   50
+--  Eva    | South |  50 |  200 |
+```
+
+> 💡 **Tip:** The `NULL` at the edge is usually what the task wants ("`NULL` for their first order"): no `COALESCE` needed.
+
+> 📝 **Note:** `LAG` gives the **value**, not the difference. For a gap, subtract: `ordered_at - LAG(ordered_at) OVER (...)` is an `interval`, and `EXTRACT(DAY FROM ...)` gives the complete days (09-05).
+
+---
+
+### Running totals and the default frame
+
+With `ORDER BY` inside `OVER`, an aggregate covers the rows **from the start of the window up to the current row**: a running total.
+
+Made-up table `daily(day, steps)`:
+
+| day | steps |
+|---|---|
+| 1 | 100 |
+| 2 | 300 |
+| 3 | 200 |
+
+```sql
+SELECT day, steps, SUM(steps) OVER (ORDER BY day) AS running
+FROM daily;
+```
+
+| day | steps | running |
+|---|---|---|
+| 1 | 100 | 100 |
+| 2 | 300 | 400 |
+| 3 | 200 | 600 |
+
+> ⚠️ **Warning:** The default frame is `RANGE ... CURRENT ROW`, and **ties in the `ORDER BY` are summed together**. Made-up `t(d, x)` = `(1,10), (2,20), (2,30), (3,40)`:
+>
+> | d | x | `SUM(x) OVER (ORDER BY d)` | `... ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW` |
+> |---|---|---|---|
+> | 1 | 10 | 10 | 10 |
+> | 2 | 20 | **60** | 30 |
+> | 2 | 30 | 60 | 60 |
+> | 3 | 40 | 100 | 100 |
+>
+> With one row per value (one row per month after a `GROUP BY`), both are the same. Otherwise, add a tie-breaker to the `ORDER BY` or write `ROWS` explicitly.
+
+> 📝 **Note:** `ROWS BETWEEN 2 PRECEDING AND CURRENT ROW` limits the frame to the current row and the 2 before it: a moving window (09-09).
+
+---
+
+### A window over an aggregate
+
+The logical order is `FROM` → `WHERE` → `GROUP BY` → aggregates → **window functions** → `ORDER BY`. So a window function can use an aggregate of the same query:
+
+```sql
+SELECT region, SUM(amount) AS total,
+       SUM(SUM(amount)) OVER () AS grand_total
+FROM sales
+GROUP BY region;
+--  North | 400 | 850
+--  South | 450 | 850
+```
+
+`SUM(amount)` is the group's total; `SUM(...) OVER ()` adds those totals across all groups.
+
+> 💡 **Tip:** It works, but it's hard to read. A CTE with the `GROUP BY`, and the window function on top of it, does the same thing in two readable steps (09-07, 09-09).
+
+---
+
+### Moving average and months with no sales
+
+A "3-month" moving average over a monthly `GROUP BY` silently breaks when a month has no sales: that month is **not a row** at all, so nothing marks the gap.
+
+Made-up table `sales(sold_on, amount)` (a different one from the `sales` above), with **no sales in February**:
+
+| sold_on | amount |
+|---|---|
+| 2024-01-10 | 300 |
+| 2024-03-05 | 600 |
+| 2024-04-20 | 900 |
+
+| Version | Window | February | April's average |
+|---|---|---|---|
+| Monthly `GROUP BY` + `ROWS BETWEEN 2 PRECEDING` | last 3 **rows** | missing | (300 + 600 + 900) / 3 = **600**: reaches back to January |
+| Monthly `GROUP BY` + `RANGE BETWEEN '2 months' PRECEDING` | last 3 **calendar months** | missing | (600 + 900) / 2 = **750**: right months, but February is skipped, not 0 |
+| All months generated + `LEFT JOIN` + `COALESCE(..., 0)` | last 3 calendar months | `0` | (0 + 600 + 900) / 3 = **500** |
+
+The fix: generate every month, start the `FROM` there, and `LEFT JOIN` the revenue:
+
+```sql
+WITH months AS (
+  SELECT generate_series(
+    (SELECT date_trunc('month', MIN(sold_on)) FROM sales),
+    (SELECT date_trunc('month', MAX(sold_on)) FROM sales),
+    INTERVAL '1 month'
+  )::date AS month
+),
+monthly AS (
+  SELECT date_trunc('month', sold_on)::date AS month, SUM(amount) AS total
+  FROM sales
+  GROUP BY 1
+)
+SELECT m.month,
+       COALESCE(s.total, 0) AS total,
+       ROUND(AVG(COALESCE(s.total, 0))
+             OVER (ORDER BY m.month ROWS BETWEEN 2 PRECEDING AND CURRENT ROW), 2) AS avg_3m
+FROM months m                                -- the table that must be complete goes in FROM
+LEFT JOIN monthly s ON s.month = m.month     -- LEFT, not JOIN: a plain JOIN drops February again
+ORDER BY m.month;
+```
+
+> ⚠️ **Warning:** `AVG` **ignores** `NULL`s, it does not count them as 0. Without the `COALESCE` inside the `AVG`, February is generated but still left out of the average.
+
+> ⚠️ **Warning:** Take the month from the generated table (`m.month`), not from the joined one: on February's row `s.month` is `NULL`.
+
+> 💡 **Tip:** `date_trunc` the `MIN`/`MAX` before `generate_series`, or the series runs on the 10th of each month and never matches. Use the same rules (time zone, status filter) for the bounds as for the revenue.
+
+> 💡 **Tip:** A passing check doesn't prove this is right: if every month has sales, all three versions give the same result. Test by emptying one month in `sqllab_play` (for example, set its orders to `cancelled`).
+
+> 📝 **Note:** Came up after 09-09 (three-month average).
