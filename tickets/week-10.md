@@ -5,7 +5,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 
 | Ticket | Title | Type | Status |
 | --- | --- | --- | --- |
-| 10-01 | Predict: lookup by primary key | PREDICT | todo |
+| 10-01 | Predict: lookup by primary key | PREDICT | done |
 | 10-02 | Predict: lookup by customer | PREDICT | todo |
 | 10-03 | Index for customer lookups | DDL | todo |
 | 10-04 | Predict: first rows in id order | PREDICT | todo |
@@ -17,7 +17,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
 
 ---
 
-## 10-01: Predict: lookup by primary key
+## 10-01: Predict: lookup by primary key ✅
 - Type: PREDICT
 - Effort: 1 exercise (5 to 12 min)
 - Concept: EXPLAIN: primary key lookup
