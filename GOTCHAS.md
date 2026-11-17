@@ -76,6 +76,7 @@
   - [Scan types](#scan-types)
   - [`Seq Scan` and selectivity](#seq-scan-and-selectivity)
   - [`CREATE INDEX`](#create-index)
+  - [Indexes on more than one column: the order matters](#indexes-on-more-than-one-column-the-order-matters)
 
 ---
 
@@ -2053,4 +2054,24 @@ CREATE INDEX events_user_id_idx ON events (user_id);
 - Index names are unique in the whole **schema**, not per table. Use `<table>_<column>_idx`: it's the name Postgres generates when you leave it out, and you can guess it without looking.
 - A plain `CREATE INDEX` blocks writes to the table while it's built. In production, `CREATE INDEX CONCURRENTLY` doesn't, but it's slower, can't run inside a transaction, and if it fails it leaves an `INVALID` index you must drop and create again.
 
-> 📝 **Note:** Came up in 10-01 to 10-04.
+### Indexes on more than one column: the order matters
+
+A multi-column index `(a, b)` is sorted by `a`, and by `b` **inside** each `a`, like a phone book sorted by surname, then first name.
+
+```sql
+CREATE INDEX events_user_id_happened_at_idx ON events (user_id, happened_at);
+```
+
+| Filter | Uses the index well? | Why |
+|---|---|---|
+| `user_id = 17 AND happened_at >= ... AND happened_at < ...` | **yes** | jump to user 17, then read only the date range inside it |
+| `user_id = 17` | **yes** | leftmost prefix: all the "Silvas", whatever the first name |
+| `happened_at >= ... AND happened_at < ...` only | **no** (`Seq Scan`) | dates are sorted only inside each user, so they're spread over the whole index |
+
+- **Leftmost prefix rule:** `(a, b)` serves filters on `a`, and on `a` + `b`, but not on `b` alone.
+- **Equality first, range last:** put the `=` column first and the range column (`BETWEEN`, `>=`/`<`) after it. With `(happened_at, user_id)`, the date range would be read for **every** user, and `user_id` checked entry by entry.
+- **Redundant indexes:** `(user_id, happened_at)` already covers what `(user_id)` alone does. In a real database, `events_user_id_idx` could be dropped: every extra index slows down `INSERT`/`UPDATE`/`DELETE` and takes space.
+
+> 📝 **Note:** In these plans the index shows up as `Bitmap Index Scan` + `Bitmap Heap Scan`: hundreds of matches spread over the table, so Postgres collects their locations first and then reads the table pages in physical order.
+
+> 📝 **Note:** Came up in 10-01 to 10-07.
