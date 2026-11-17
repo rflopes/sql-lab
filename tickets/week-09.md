@@ -14,7 +14,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 09-09 | Three-month average | QUERY | done |
 | 09-10 | Cheapest in the category | QUERY | done |
 | 09-11 | Order totals keep growing | DEBUG | done |
-| 09-12 | Tied cheapest products go missing | DEBUG | todo |
+| 09-12 | Tied cheapest products go missing | DEBUG | done |
 | 09-13 | Customers who went quiet | QUERY | todo |
 | 09-14 | Best seller per category | QUERY | todo |
 
@@ -113,7 +113,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: order_id, order_item_id, line_cents, order_cents.
   - `pnpm check 09-11` is green.
 
-## 09-12: Tied cheapest products go missing
+## 09-12: Tied cheapest products go missing ✅
 - Type: DEBUG
 - Effort: 1 exercise (5 to 12 min)
 - Concept: ROW_NUMBER versus RANK on ties

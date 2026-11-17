@@ -9,7 +9,7 @@
 SELECT product_id, category_id, unit_price_cents
 FROM (
   SELECT product_id, category_id, unit_price_cents,
-         ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY unit_price_cents) AS rn
+         RANK() OVER (PARTITION BY category_id ORDER BY unit_price_cents) AS rnk
   FROM products
 ) t
-WHERE rn = 1;
+WHERE rnk = 1;
