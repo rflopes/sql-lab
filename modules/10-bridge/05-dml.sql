@@ -6,4 +6,14 @@
 
 -- Write your statements below
 
+BEGIN;
 
+UPDATE products SET unit_price_cents = ROUND(unit_price_cents * 1.1, 0) WHERE product_id = 1;
+
+SAVEPOINT before_delete_reviews;
+
+DELETE FROM reviews WHERE product_id = 1;
+
+ROLLBACK TO SAVEPOINT before_delete_reviews;
+
+COMMIT;
