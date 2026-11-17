@@ -7,4 +7,4 @@
 
 -- Write your statements below
 
-
+CREATE INDEX page_views_customer_id_viewed_at_idx ON page_views (customer_id, viewed_at)

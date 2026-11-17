@@ -11,7 +11,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 10-04 | Predict: first rows in id order | PREDICT | done |
 | 10-05 | Undo only half a transaction | DML | done |
 | 10-06 | Which indexes exist? | QUERY | done |
-| 10-07 | One index, two conditions | DDL | todo |
+| 10-07 | One index, two conditions | DDL | done |
 
 Tables: categories, suppliers, products, customers, employees, orders, order_items, payments, reviews. Explore with `pnpm sql` (`\dt`, `\d table`). Money is in integer cents. "Today" is never `now()`: statements fix their own dates.
 
@@ -78,7 +78,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - One column: indexname.
   - `pnpm check 10-06` is green.
 
-## 10-07: One index, two conditions
+## 10-07: One index, two conditions ✅
 - Type: DDL
 - Effort: 1 exercise (5 to 12 min)
 - Concept: Indexes on more than one column
