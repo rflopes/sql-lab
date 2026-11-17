@@ -12,7 +12,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 09-07 | Revenue so far | QUERY | done |
 | 09-08 | Line and order totals together | QUERY | done |
 | 09-09 | Three-month average | QUERY | done |
-| 09-10 | Cheapest in the category | QUERY | todo |
+| 09-10 | Cheapest in the category | QUERY | done |
 | 09-11 | Order totals keep growing | DEBUG | todo |
 | 09-12 | Tied cheapest products go missing | DEBUG | todo |
 | 09-13 | Customers who went quiet | QUERY | todo |
@@ -92,7 +92,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: month (first day of the month, as a date), revenue_cents, moving_avg_cents.
   - `pnpm check 09-09` is green.
 
-## 09-10: Cheapest in the category
+## 09-10: Cheapest in the category ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: FIRST_VALUE
