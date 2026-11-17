@@ -8,4 +8,14 @@
 
 -- Write your query below
 
-
+WITH customer_order_distance AS (
+  SELECT customer_id,
+    (ordered_at AT TIME ZONE 'UTC')::date  - (LAG((ordered_at AT TIME ZONE 'UTC')::date) OVER (PARTITION BY customer_id ORDER BY ordered_at, order_id)) AS days_since_prev
+  FROM orders
+)
+SELECT customer_id, MAX(days_since_prev) AS max_gap_days
+FROM customer_order_distance
+WHERE days_since_prev IS NOT NULL
+GROUP BY customer_id
+ORDER BY 2 DESC, customer_id
+LIMIT 10
