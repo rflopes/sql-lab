@@ -1351,6 +1351,46 @@ FROM (VALUES (interval '1 day 2 hours 30 minutes')) AS t(waited);
 --  1 day 02:30:00 | 95400.000000 |         26
 ```
 
+#### "How many days?": three different answers
+
+"Days between two timestamps" can mean three things. Read the task wording before picking one:
+
+```sql
+SELECT b - a                                    AS waited,
+       EXTRACT(DAY FROM b - a)                  AS full_24h,
+       ROUND(EXTRACT(EPOCH FROM b - a) / 86400, 2) AS fraction,
+       b::date - a::date                        AS calendar
+FROM (VALUES (timestamp '2024-03-01 23:00', timestamp '2024-03-02 01:00')) AS t(a, b);
+--  waited   | full_24h | fraction | calendar
+--  02:00:00 |        0 |     0.08 |        1
+```
+
+| Meaning | Expression | Type |
+|---|---|---|
+| complete 24-hour periods ("complete 24-hour periods since...", 09-05) | `EXTRACT(DAY FROM ts - ts)` | `numeric` |
+| fraction of a day | `EXTRACT(EPOCH FROM ts - ts) / 86400` | `numeric` |
+| calendar days, date changes ("gap in days", 09-13) | `ts::date - ts::date` | `integer` |
+
+> ⚠️ **Warning:** Check the **type** too: `timestamp - timestamp` (or `timestamptz - timestamptz`) is an `interval` like `"594 days"`, even after `DATE_TRUNC('day', ...)`. The checker compares values, so `"594 days"` is not `594`. Only `date - date` gives an `integer`.
+
+#### `timestamptz::date` and `AT TIME ZONE`
+
+On a `timestamptz`, `::date` first converts the instant to the **session** time zone, then takes the date. To pin the zone yourself, use `AT TIME ZONE`: it turns a `timestamptz` into a plain `timestamp` (wall clock in that zone), and `::date` on a plain `timestamp` converts nothing.
+
+```sql
+SET TimeZone = 'America/New_York';   -- a session that is not UTC
+SELECT ts::date                            AS cast_date,
+       DATE_TRUNC('day', ts, 'UTC')::date  AS trunc_utc_date,
+       (ts AT TIME ZONE 'UTC')::date       AS utc_date
+FROM (VALUES (timestamptz '2024-03-02 00:30+00')) AS t(ts);
+--  cast_date  | trunc_utc_date | utc_date
+--  2024-03-01 | 2024-03-01     | 2024-03-02
+```
+
+> ⚠️ **Warning:** `DATE_TRUNC('day', ts, 'UTC')` truncates in UTC, but returns a `timestamptz` again, so the `::date` after it goes back to the session zone. Only `(ts AT TIME ZONE 'UTC')::date` is right in every session. The parentheses are needed: without them, `::date` binds to `'UTC'`.
+
+> 📝 **Note:** `pnpm sql` and the checker run in UTC, so all three agree there. The difference only shows up in a session in another zone. Came up in 09-13 (customers who went quiet).
+
 > 📝 **Note:** Hit in 07-01 to 07-08.
 
 ### Conditional expressions
