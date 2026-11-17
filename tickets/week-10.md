@@ -6,7 +6,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | Ticket | Title | Type | Status |
 | --- | --- | --- | --- |
 | 10-01 | Predict: lookup by primary key | PREDICT | done |
-| 10-02 | Predict: lookup by customer | PREDICT | todo |
+| 10-02 | Predict: lookup by customer | PREDICT | done |
 | 10-03 | Index for customer lookups | DDL | todo |
 | 10-04 | Predict: first rows in id order | PREDICT | todo |
 | 10-05 | Undo only half a transaction | DML | todo |
@@ -27,7 +27,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - You wrote your prediction on the `-- GUESS:` line before running anything.
   - `pnpm check 10-01` ran and you know why you were right or wrong. Not graded.
 
-## 10-02: Predict: lookup by customer
+## 10-02: Predict: lookup by customer ✅
 - Type: PREDICT (optional)
 - Effort: 1 exercise (5 to 12 min)
 - Concept: EXPLAIN: filter without an index
