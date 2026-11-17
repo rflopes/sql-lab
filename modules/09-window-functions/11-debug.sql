@@ -8,6 +8,6 @@
 -- The query below is broken. Fix it.
 SELECT order_id, order_item_id,
        quantity * unit_price_cents AS line_cents,
-       SUM(quantity * unit_price_cents) OVER (PARTITION BY order_id ORDER BY order_item_id) AS order_cents
+       SUM(quantity * unit_price_cents) OVER (PARTITION BY order_id) AS order_cents
 FROM order_items
 WHERE order_id <= 10;
