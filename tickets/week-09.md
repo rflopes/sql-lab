@@ -16,7 +16,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 09-11 | Order totals keep growing | DEBUG | done |
 | 09-12 | Tied cheapest products go missing | DEBUG | done |
 | 09-13 | Customers who went quiet | QUERY | done |
-| 09-14 | Best seller per category | QUERY | todo |
+| 09-14 | Best seller per category | QUERY | done |
 
 Tables: categories, suppliers, products, customers, employees, orders, order_items, payments, reviews. Explore with `pnpm sql` (`\dt`, `\d table`). Money is in integer cents. "Today" is never `now()`: statements fix their own dates.
 
@@ -134,7 +134,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Columns: customer_id, max_gap_days. Sorted by max_gap_days desc, then customer_id.
   - `pnpm check 09-13` is green.
 
-## 09-14: Best seller per category
+## 09-14: Best seller per category ✅
 - Type: QUERY
 - Effort: 1 exercise (5 to 12 min)
 - Concept: (not given)
