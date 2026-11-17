@@ -69,6 +69,7 @@
   - [Running totals and the default frame](#running-totals-and-the-default-frame)
   - [A window over an aggregate](#a-window-over-an-aggregate)
   - [Moving average and months with no sales](#moving-average-and-months-with-no-sales)
+  - [`FIRST_VALUE`, `LAST_VALUE` and the frame](#first_value-last_value-and-the-frame)
 
 ---
 
@@ -1894,3 +1895,34 @@ ORDER BY m.month;
 > 💡 **Tip:** A passing check doesn't prove this is right: if every month has sales, all three versions give the same result. Test by emptying one month in `sqllab_play` (for example, set its orders to `cancelled`).
 
 > 📝 **Note:** Came up after 09-09 (three-month average).
+
+---
+
+### `FIRST_VALUE`, `LAST_VALUE` and the frame
+
+`FIRST_VALUE(col)` takes `col` from the **first row of the frame**, `LAST_VALUE(col)` from the **last** one. "First" only means something when there is an order, so both need an `ORDER BY` inside `OVER`.
+
+```sql
+SELECT seller, region, amount,
+       FIRST_VALUE(seller) OVER (PARTITION BY region ORDER BY amount DESC, seller) AS top_seller
+FROM sales;
+--  Bruno  | North | 300 | Bruno
+--  Ana    | North | 100 | Bruno
+--  Carla  | South | 200 | Carla
+--  Duarte | South | 200 | Carla
+--  Eva    | South |  50 | Carla
+```
+
+> ⚠️ **Warning:** Without `ORDER BY`, the frame is the whole partition but the order of its rows is **undefined**: Postgres returns whichever row happens to come first (the physical order, or an earlier sort or hash in the plan). It can look right today and change after a `VACUUM`, a new index or a different plan. The same goes for a non-unique `ORDER BY`: Carla and Duarte tie at 200, so without `, seller` either one can be `top_seller`.
+
+> ⚠️ **Warning:** With the default frame (`RANGE ... CURRENT ROW`), `LAST_VALUE` gives the last **peer** of the current row (the last row with the same `ORDER BY` value), not the last row of the partition. With a unique `ORDER BY`, that's just the current row. To see the whole partition, widen the frame yourself. South, `ORDER BY amount DESC, seller`:
+>
+> | seller | amount | `LAST_VALUE(seller)`, default frame | `... ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING` |
+> |---|---|---|---|
+> | Carla | 200 | Carla | Eva |
+> | Duarte | 200 | Duarte | Eva |
+> | Eva | 50 | Eva | Eva |
+
+> 💡 **Tip:** Aggregates (`MIN`, `MAX`, `SUM`) with `OVER (PARTITION BY ...)` and no `ORDER BY` are fine: their result doesn't depend on the order. Use `FIRST_VALUE` when you need **another column** of that row (the name of the cheapest product); `MIN` only gives the lowest value itself.
+
+> 📝 **Note:** Came up after 09-10 (cheapest in the category).
