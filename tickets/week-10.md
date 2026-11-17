@@ -8,7 +8,7 @@ Planned: up to 5 sessions of 30 min, 2 or 3 exercises each. Slipping is fine.
 | 10-01 | Predict: lookup by primary key | PREDICT | done |
 | 10-02 | Predict: lookup by customer | PREDICT | done |
 | 10-03 | Index for customer lookups | DDL | done |
-| 10-04 | Predict: first rows in id order | PREDICT | todo |
+| 10-04 | Predict: first rows in id order | PREDICT | done |
 | 10-05 | Undo only half a transaction | DML | todo |
 | 10-06 | Which indexes exist? | QUERY | todo |
 | 10-07 | One index, two conditions | DDL | todo |
@@ -47,7 +47,7 @@ Tables: categories, suppliers, products, customers, employees, orders, order_ite
   - Make lookups of page_views by customer_id able to use an index: create one on that column.
   - `pnpm check 10-03` is green.
 
-## 10-04: Predict: first rows in id order
+## 10-04: Predict: first rows in id order ✅
 - Type: PREDICT (optional)
 - Effort: 1 exercise (5 to 12 min)
 - Concept: EXPLAIN: sorted output with LIMIT
