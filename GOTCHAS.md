@@ -70,6 +70,12 @@
   - [A window over an aggregate](#a-window-over-an-aggregate)
   - [Moving average and months with no sales](#moving-average-and-months-with-no-sales)
   - [`FIRST_VALUE`, `LAST_VALUE` and the frame](#first_value-last_value-and-the-frame)
+- [Indexes and `EXPLAIN`](#indexes-and-explain)
+  - [Reading a plan: a tree where the top pulls from below](#reading-a-plan-a-tree-where-the-top-pulls-from-below)
+  - [`ORDER BY ... LIMIT`: the index lets `LIMIT` stop early](#order-by--limit-the-index-lets-limit-stop-early)
+  - [Scan types](#scan-types)
+  - [`Seq Scan` and selectivity](#seq-scan-and-selectivity)
+  - [`CREATE INDEX`](#create-index)
 
 ---
 
@@ -1966,3 +1972,85 @@ FROM sales;
 > 💡 **Tip:** Aggregates (`MIN`, `MAX`, `SUM`) with `OVER (PARTITION BY ...)` and no `ORDER BY` are fine: their result doesn't depend on the order. Use `FIRST_VALUE` when you need **another column** of that row (the name of the cheapest product); `MIN` only gives the lowest value itself.
 
 > 📝 **Note:** Came up after 09-10 (cheapest in the category).
+
+---
+
+## Indexes and `EXPLAIN`
+
+Made-up table used below, `events(event_id PRIMARY KEY, user_id, happened_at)`, 200,000 rows, about 667 per `user_id`. Plans come from `EXPLAIN (ANALYZE, COSTS OFF, TIMING OFF, SUMMARY OFF)` to keep them short.
+
+### Reading a plan: a tree where the top pulls from below
+
+A plan is a **tree of nodes**. Each node asks the node(s) **below** it for rows, one at a time, and passes its own rows **up**. The top node is the one that hands rows to you. `actual rows=` says how many rows each node really produced.
+
+```
+ Limit (actual rows=5)                  <- asks for rows until it has 5, then stops asking
+   ->  Index Scan using events_pkey     <- produced only 5 rows: nobody asked for a 6th
+```
+
+So a node only does the work its parent asks for. That's why `LIMIT` can be almost free, or not, depending on what's below it (next section).
+
+### `ORDER BY ... LIMIT`: the index lets `LIMIT` stop early
+
+A B-tree index keeps its keys **sorted**. Walking it from the start gives the rows already in order, so no sort is needed, and `Limit` can stop after the first few:
+
+```sql
+SELECT * FROM events ORDER BY event_id LIMIT 5;
+--  Limit (actual rows=5)
+--    ->  Index Scan using events_pkey on events (actual rows=5)
+```
+
+5 index entries read, 5 trips to the table, out of 200,000 rows.
+
+Without an index on the sort column, nothing can be returned until **every** row has been seen: any row could be the smallest.
+
+```sql
+SELECT * FROM events ORDER BY happened_at LIMIT 5;   -- no index on happened_at
+--  Limit (actual rows=5)
+--    ->  Sort (actual rows=5)
+--          Sort Key: happened_at
+--          Sort Method: top-N heapsort
+--          ->  Seq Scan on events (actual rows=200000)
+```
+
+Same `LIMIT 5`, but the `Seq Scan` produced all 200,000 rows because `Sort` had to pull them all before it could hand up the first one.
+
+> 💡 **Tip:** To see where the work happens, follow `actual rows=` from the bottom up. A big number low in the tree and a small one at the top means rows were read only to be thrown away.
+
+> 📝 **Note:** `top-N heapsort` keeps only the best N rows in memory while it reads, so it's cheaper than a full sort. It still has to read every row.
+
+### Scan types
+
+| Scan | What it does | Example |
+|---|---|---|
+| `Seq Scan` | reads every row of the table, in physical order, and tests the filter on each | `WHERE user_id = 17` with no index on `user_id` |
+| `Index Scan` | finds matches in the index, then goes to the table (the heap) for each row | `WHERE event_id = 12345` |
+| `Index Only Scan` | answers from the index alone, without going to the table | only the indexed columns are needed, e.g. `SELECT event_id ... WHERE event_id < 100` |
+| `Bitmap Heap Scan` | collects matching row locations from the index first, then reads the table pages in physical order | many matches spread over the table |
+
+- A `PRIMARY KEY` (and a `UNIQUE` constraint) **creates a B-tree index** by itself: `events_pkey`. You don't need to create one.
+- The index stores the key plus a **pointer** to the row. `SELECT *` needs the other columns, so it must follow the pointer to the table: `Index Scan`, not `Index Only Scan`.
+
+### `Seq Scan` and selectivity
+
+```sql
+SELECT * FROM events WHERE user_id = 17;   -- no index on user_id
+--  Seq Scan on events (actual rows=667)
+--    Filter: (user_id = 17)
+--    Rows Removed by Filter: 199333
+```
+
+667 kept out of 200,000 read, about 0.3%: the filter is very **selective**, and almost all the work is wasted. That's the case an index helps.
+
+> ⚠️ **Warning:** A `Seq Scan` is not bad in itself. Reading pages in order is fast; when a filter keeps a big share of the table, it's usually the best plan, even with an index available. Look at the selectivity (kept ÷ read), not only at the scan type.
+
+### `CREATE INDEX`
+
+```sql
+CREATE INDEX events_user_id_idx ON events (user_id);
+```
+
+- Index names are unique in the whole **schema**, not per table. Use `<table>_<column>_idx`: it's the name Postgres generates when you leave it out, and you can guess it without looking.
+- A plain `CREATE INDEX` blocks writes to the table while it's built. In production, `CREATE INDEX CONCURRENTLY` doesn't, but it's slower, can't run inside a transaction, and if it fails it leaves an `INVALID` index you must drop and create again.
+
+> 📝 **Note:** Came up in 10-01 to 10-04.
