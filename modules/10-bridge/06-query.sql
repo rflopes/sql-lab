@@ -5,5 +5,6 @@
 -- Run: pnpm check 10-06
 
 -- Write your query below
-
-
+SELECT indexname
+FROM pg_indexes
+WHERE schemaname = 'public' AND tablename = 'page_views'
